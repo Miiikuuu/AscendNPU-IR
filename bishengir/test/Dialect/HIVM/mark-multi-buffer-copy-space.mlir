@@ -1,11 +1,14 @@
 // RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,1),(ub,1)]" | FileCheck %s --check-prefix=L1
 // RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,1),(ub,5)]" | FileCheck %s --check-prefix=UB
 // RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,1),(ub,5)]" | FileCheck %s --check-prefix=BOTH
+// RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=false multibuffer-mode=[(gm,1),(l1,3),(l0c,1),(ub,5)]" | FileCheck %s --check-prefix=OFF
 
 // A plain GM->L1 load must use the L1 count, independently of UB settings.
 // L1-LABEL: func.func @copy_spaces
 // UB-LABEL: func.func @copy_spaces
 // BOTH-LABEL: func.func @copy_spaces
+// OFF-LABEL: func.func @copy_spaces
+// OFF-NOT: annotation.mark
 func.func @copy_spaces(%in: memref<16x16xf32, #hivm.address_space<gm>>,
                        %out: memref<16x16xf32, #hivm.address_space<gm>>) {
   %c0 = arith.constant 0 : index
