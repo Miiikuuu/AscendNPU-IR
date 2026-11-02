@@ -20,10 +20,11 @@ func.func @l1_l0c_nbuffer(%a: memref<16x16xf16, #hivm.address_space<gm>>,
   // ROTATE-DAG: %[[THREE:.*]] = arith.constant 3 : i64
   // ROTATE-DAG: %[[FOUR:.*]] = arith.constant 4 : i64
   scf.for %i = %c0 to %c7 step %c1 {
-    // PLAN: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
+    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
     %al = memref.alloc() : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
+    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
     %bl = memref.alloc() : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
-    // PLAN: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf32, #hivm.address_space<cc>>
+    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf32, #hivm.address_space<cc>>
     %acc = memref.alloc() : memref<1x1x16x16xf32, #hivm.address_space<cc>>
     // ROTATE-DAG: arith.remui %{{.*}}, %[[THREE]] : i64
     // ROTATE-DAG: arith.remui %{{.*}}, %[[FOUR]] : i64
