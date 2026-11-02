@@ -426,13 +426,20 @@ struct MarkMultiBuffer : public OpRewritePattern<CopyOpType> {
   using OpRewritePattern<CopyOpType>::OpRewritePattern;
 
   const unsigned multiBufferNum;
+  const AddressSpace addressSpace;
 
-  explicit MarkMultiBuffer(MLIRContext *ctx, unsigned multiBufferNum = 2)
-      : OpRewritePattern<CopyOpType>(ctx), multiBufferNum(multiBufferNum) {}
+  explicit MarkMultiBuffer(MLIRContext *ctx, unsigned multiBufferNum,
+                           AddressSpace addressSpace)
+      : OpRewritePattern<CopyOpType>(ctx), multiBufferNum(multiBufferNum),
+        addressSpace(addressSpace) {}
 
   LogicalResult matchAndRewrite(CopyOpType copyLikeOp,
                                 PatternRewriter &rewriter) const override {
     auto markBufferFunc = [&](mlir::Value &v) -> LogicalResult {
+      // Copy operations can target different local memory spaces. Select the
+      // count by the buffer's space, rather than by the operation name.
+      if (getHIVMAddressSpace(v.getType()) != addressSpace)
+        return failure();
       auto *allocOp = utils::tracebackMemRef(v).getDefiningOp();
       if (!utils::isAllocLikeOp(allocOp)) {
         return failure();
@@ -604,17 +611,18 @@ void MarkMultiBufferPass::runOnOperation() {
   if (disableMultiBufferOnUB)
     mode.ub = 1;
 
-  if (mode.l1 > 1)
-    patterns.insert<MarkMultiBuffer<hivm::ND2NZOp>>(patterns.getContext(),
-                                                    mode.l1);
+  if (mode.l1 > 1) {
+    patterns
+        .insert<MarkMultiBuffer<hivm::ND2NZOp>, MarkMultiBuffer<hivm::LoadOp>>(
+            patterns.getContext(), mode.l1, AddressSpace::L1);
+  }
   if (mode.l0c > 1)
-    patterns.insert<MarkMultiBuffer<hivm::FixpipeOp>>(patterns.getContext(),
-                                                      mode.l0c);
+    patterns.insert<MarkMultiBuffer<hivm::FixpipeOp>>(
+        patterns.getContext(), mode.l0c, AddressSpace::L0C);
   if (mode.ub > 1) {
-    patterns.insert<MarkMultiBuffer<hivm::LoadOp>>(patterns.getContext(),
-                                                   mode.ub);
-    patterns.insert<MarkMultiBuffer<hivm::StoreOp>>(patterns.getContext(),
-                                                    mode.ub);
+    patterns
+        .insert<MarkMultiBuffer<hivm::LoadOp>, MarkMultiBuffer<hivm::StoreOp>>(
+            patterns.getContext(), mode.ub, AddressSpace::UB);
   }
   if (mode.gm > 1 && isMixFuncCore)
     patterns.insert<MarkWorkspaceMultiBuffer<hivm::StoreOp>,

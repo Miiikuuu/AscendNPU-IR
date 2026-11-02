@@ -60,7 +60,7 @@ iter 2:                                 [MTE2 load buf0][ V compute buf0 ]...
 | 内存层次 | 触发标记的操作 | 重叠的流水线 | 收益形态 |
 |-----|-----|-----|-----|
 | GM（Workspace） | 写Workspace的`hivm.hir.store`、`hivm.hir.fixpipe` | Cube核与Vector核跨核并行 | MIX算子中Cube的计算结果经Workspace交给Vector继续处理。多份Workspace让两个核错开一个迭代同时工作，而非互相等待 |
-| L1（cbuf） | `hivm.hir.nd2nz` | MTE2与MTE1、M | 矩阵乘左右矩阵的搬入与当前分块的Cube计算重叠 |
+| L1（cbuf） | `hivm.hir.nd2nz`、搬入L1的`hivm.hir.load` | MTE2与MTE1、M | 矩阵乘左右矩阵的搬入与当前分块的Cube计算重叠 |
 | L0C | `hivm.hir.fixpipe` | M与FIX | 上一次矩阵乘结果搬出L0C的同时，下一次矩阵乘可以开始累加 |
 | UB | `hivm.hir.load`、`hivm.hir.store` | MTE2、V、MTE3 | 纯Vector算子以及MIX算子的Vector侧，搬入、计算、搬出三段流水并行 |
 
@@ -83,7 +83,7 @@ iter 2:                                 [MTE2 load buf0][ V compute buf0 ]...
 
 多缓冲的使能分为四步，分别由不同的Pass承担：
 
-1. **标记**：`-hivm-mark-multi-buffer`按内存层次识别候选Buffer，在其分配点上生成`annotation.mark {hivm.multi_buffer = N}`。本地Buffer的N固定为2，GM Workspace的N由`--set-workspace-multibuffer`指定。
+1. **标记**：`-hivm-mark-multi-buffer`按内存层次识别候选Buffer，在其分配点上生成`annotation.mark {hivm.multi_buffer = N}`。N可通过`--multibuffer-mode`按内存层次指定；未显式配置时沿用各目标平台的默认值。
 2. **分配地址**：PlanMemory为带标记的Buffer分配N份地址，生成携带多个偏移的`hivm.hir.pointer_cast`。
 3. **插入同步**：自动同步按槽位轮转分配flag ID与event ID，保证同一槽位的生产者与消费者成对匹配。
 4. **选择槽位**：`-hivm-enable-multi-buffer`引入迭代计数器`hivm.hir.multi_buffer_counter`，对N取模选出当次迭代实际使用的地址。
@@ -144,11 +144,15 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-of-local-buffer=no-limit
 bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
 ```
 
-## 后续演进
+## 按内存层次指定数量
 
-上述三个`limit`类选项各自约束一部分内存层次，语义相互交叠且都以“限制”方式表达，可读性较差：既无法直接表达“只对L1开启多缓冲”，也无法为不同层次指定不同的缓冲数量。
+可使用一个选项独立控制各层的数量，例如让L1使用3槽、L0C使用4槽，并关闭GM与UB多缓冲：
 
-后续计划废弃`--limit-auto-multi-buffer-only-for-local-buffer`、`--limit-auto-multi-buffer-of-local-buffer`、`--limit-auto-multi-buffer-buffer`三个选项，合并为一个正向表达的`--multibuffer-mode`选项，直接指定GM、L1、L0C、UB四个内存层次各自开启的多缓冲数量：
+```bash
+bishengir-compile input.mlir --multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 4), (ub, 1)]"
+```
+
+`--multibuffer-mode`直接指定GM、L1、L0C、UB四个内存层次的多缓冲数量。旧的三个`limit`类选项保留用于兼容；显式mode决定各层数量，自动多缓冲总开关仍然有效：
 
 ```bash
 --multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 2), (ub, 2)]"
@@ -160,10 +164,10 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
 - 数量等于1：该内存层次关闭多缓冲（只有一份Buffer）。
 - 数量等于0：非法配置，编译报错。
 
-例如只对L1开启多缓冲：
+例如只对L1开启三缓冲：
 
 ```bash
---multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]"
+--multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 1), (ub, 1)]"
 ```
 
 新旧选项的等价关系如下，可用于迁移现有配置。下表以Ascend 950PR&950DT系列产品为基准，即目标为MIX算子、其余选项保持默认（GM数量取`--set-workspace-multibuffer`的默认值2）：
@@ -177,11 +181,12 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
 | `--limit-auto-multi-buffer-buffer=only-cube` | `[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]` |
 | `--limit-auto-multi-buffer-buffer=only-vector` | `[(gm, 2), (l1, 1), (l0c, 1), (ub, 2)]` |
 
-> 说明：`--multibuffer-mode`尚未提供，本节仅用于说明演进方向。选项切换时会保留一个版本的兼容期，届时在版本说明中同步。
+> 必须提供gm、l1、l0c、ub全部四层，不能重复或遗漏。配置数量不保证性能收益；需结合容量、同步资源和实测选择。
 
 ## 使用约束
 
 - `--limit-auto-multi-buffer-only-for-local-buffer`与`--limit-auto-multi-buffer-buffer`仅对核类型为MIX的函数生效。纯Cube或纯Vector算子不存在GM Workspace交接，也不存在Cube侧与Vector侧的划分，配置这两个选项不会改变行为。
 - 多缓冲候选必须位于循环内，且从Buffer分配点到最外层的所有祖先循环都必须是`scf.for`或`scf.while`。位于`scf.parallel`、`scf.forall`等循环内的Buffer不满足“每次迭代轮转一个槽位”的前提，不会被标记。
-- 本地Buffer的多缓冲数量固定为2，不可通过编译选项调整；仅GM Workspace的数量可通过`--set-workspace-multibuffer`配置。
+- 本地Buffer可通过`--multibuffer-mode`配置数量。普通Load按目标地址空间使用L1或UB数量；ND2NZ使用L1数量，Fixpipe源Buffer使用L0C数量。
+- L1和L0C的单个缓冲环若已超过设备容量，普通和RegBase PlanMemory会在展开N份实体前直接报告overflow，避免极大N先耗尽Host内存。其余对齐和生命周期冲突仍由原有规划器检查。
 - 用户需保证N倍Buffer占用不超过对应内存空间的容量上限，否则PlanMemory会上报overflow。报错形式与规避方式见[内存管理-使用约束](./plan_memory.md#使用约束)。

@@ -60,7 +60,7 @@ The compiler identifies multi-buffer candidates by memory hierarchy level. Diffe
 | Memory Hierarchy | Operation That Triggers the Marker | Overlapped Pipeline | Benefit Pattern |
 |-----|-----|-----|-----|
 | GM (Workspace) | `hivm.hir.store` and `hivm.hir.fixpipe` that write the Workspace | Cross-core parallelism between the Cube core and the Vector core | In MIX operators, the Cube computation results are passed to the Vector core through the Workspace for further processing. Multiple Workspace copies allow the two cores to work simultaneously with a one-iteration offset, rather than waiting for each other |
-| L1 (cbuf) | `hivm.hir.nd2nz` | MTE2 with MTE1 and M | The loading of the left and right matrices of matrix multiplication overlaps with the Cube computation of the current tile |
+| L1 (cbuf) | `hivm.hir.nd2nz`, `hivm.hir.load` into L1 | MTE2 with MTE1 and M | The loading of the left and right matrices of matrix multiplication overlaps with the Cube computation of the current tile |
 | L0C | `hivm.hir.fixpipe` | M with FIX | While the previous matrix multiplication result is being moved out of L0C, the next matrix multiplication can start accumulating |
 | UB | `hivm.hir.load` and `hivm.hir.store` | MTE2, V, and MTE3 | For pure Vector operators and the Vector side of MIX operators, the load, compute, and store stages run as a three-stage pipeline in parallel |
 
@@ -83,7 +83,7 @@ In addition, multi-buffer changes the synchronization structure (both the intra-
 
 Enabling multi-buffer consists of four steps, each handled by a different Pass:
 
-1. **Marking**: `-hivm-mark-multi-buffer` identifies candidate buffers by memory hierarchy and generates `annotation.mark {hivm.multi_buffer = N}` at their allocation points. For local buffers, N is fixed at 2; for GM Workspace, N is specified by `--set-workspace-multibuffer`.
+1. **Marking**: `-hivm-mark-multi-buffer` identifies candidate buffers by memory hierarchy and generates `annotation.mark {hivm.multi_buffer = N}` at their allocation points. N can be selected per memory level with `--multibuffer-mode`; without an explicit mode, target-specific defaults apply.
 2. **Address allocation**: PlanMemory allocates N addresses for marked buffers and generates `hivm.hir.pointer_cast` carrying multiple offsets.
 3. **Synchronization insertion**: Automatic synchronization assigns flag IDs and event IDs in a slot-rotating manner, ensuring that producers and consumers of the same slot are matched in pairs.
 4. **Slot selection**: `-hivm-enable-multi-buffer` introduces the iteration counter `hivm.hir.multi_buffer_counter`, which takes the modulo of N to select the address actually used in the current iteration.
@@ -144,11 +144,17 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-of-local-buffer=no-limit
 bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
 ```
 
-## Future Evolution
+## Per-Level Buffer Counts
 
-The three `limit`-type options above each constrain a portion of the memory hierarchy. Their semantics overlap with one another and are all expressed in a "restriction" manner, which makes them poorly readable: they can neither directly express "enable multi-buffer only for L1" nor specify different buffer counts for different levels.
+`--multibuffer-mode` specifies the counts for GM, L1, L0C and UB independently. The legacy `limit` options remain available for compatibility. An explicit mode selects the counts; the automatic multi-buffer master switch still applies.
 
-In the future, the three options `--limit-auto-multi-buffer-only-for-local-buffer`, `--limit-auto-multi-buffer-of-local-buffer`, and `--limit-auto-multi-buffer-buffer` are planned to be deprecated and merged into a single positively-expressed `--multibuffer-mode` option, which directly specifies the multi-buffer count enabled for each of the four levels GM, L1, L0C, and UB:
+For example, use three L1 slots and four L0C slots while disabling GM and UB multi-buffering:
+
+```bash
+bishengir-compile input.mlir --multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 4), (ub, 1)]"
+```
+
+Each tuple specifies the number of physical slots:
 
 ```bash
 --multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 2), (ub, 2)]"
@@ -160,10 +166,10 @@ Value conventions:
 - Equal to 1: multi-buffer is disabled for this level (only one buffer exists).
 - Equal to 0: invalid configuration, resulting in a compilation error.
 
-For example, to enable multi-buffer only for L1:
+For example, to enable triple buffering only for L1:
 
 ```bash
---multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]"
+--multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 1), (ub, 1)]"
 ```
 
 The equivalence between the new and old options is as follows, which can be used to migrate existing configurations. The following table uses Ascend 950PR/Ascend 950DT as the baseline, that is, the target is a MIX operator and the other options remain at their defaults (the GM count takes the default value 2 of `--set-workspace-multibuffer`):
@@ -177,11 +183,12 @@ The equivalence between the new and old options is as follows, which can be used
 | `--limit-auto-multi-buffer-buffer=only-cube` | `[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]` |
 | `--limit-auto-multi-buffer-buffer=only-vector` | `[(gm, 2), (l1, 1), (l0c, 1), (ub, 2)]` |
 
-> Note: `--multibuffer-mode` is not yet available. This section is only intended to illustrate the evolution direction. A one-version compatibility period will be retained when the option is switched, and it will be synchronized in the release notes at that time.
+> Specify all four levels exactly once. A higher count does not guarantee a speedup; choose it using capacity, synchronization resources and measurements.
 
 ## Usage Constraints
 
 - `--limit-auto-multi-buffer-only-for-local-buffer` and `--limit-auto-multi-buffer-buffer` take effect only for functions whose core type is MIX. Pure Cube or pure Vector operators have no GM Workspace handover and no Cube-side/Vector-side division, so configuring these two options does not change their behavior.
 - A multi-buffer candidate must be located inside a loop, and all ancestor loops from the Buffer allocation point to the outermost loop must be `scf.for` or `scf.while`. Buffers located inside loops such as `scf.parallel` and `scf.forall` do not satisfy the premise of "rotating one slot per iteration" and will not be marked.
-- The number of multi-buffers for a local Buffer is fixed at 2 and cannot be adjusted through compilation options; only the number of GM Workspaces can be configured through `--set-workspace-multibuffer`.
+- Local buffer counts can be configured with `--multibuffer-mode`. Plain loads use the L1 or UB count according to their destination space; ND2NZ uses the L1 count, and Fixpipe sources use the L0C count.
+- If a single L1 or L0C ring already exceeds device capacity, both PlanMemory variants report overflow before expanding N storage entries. This prevents enormous counts from exhausting host memory first; alignment and lifetime conflicts remain with the normal planner.
 - Users must ensure that the N-fold Buffer usage does not exceed the capacity limit of the corresponding memory space; otherwise, PlanMemory reports an overflow. For the error form and the workaround, see [Memory Management - Usage Constraints](./plan_memory.md#usage-constraints).
