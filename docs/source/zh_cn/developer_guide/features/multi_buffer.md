@@ -188,4 +188,5 @@ bishengir-compile input.mlir --multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 4), (u
 - `--limit-auto-multi-buffer-only-for-local-buffer`与`--limit-auto-multi-buffer-buffer`仅对核类型为MIX的函数生效。纯Cube或纯Vector算子不存在GM Workspace交接，也不存在Cube侧与Vector侧的划分，配置这两个选项不会改变行为。
 - 多缓冲候选必须位于循环内，且从Buffer分配点到最外层的所有祖先循环都必须是`scf.for`或`scf.while`。位于`scf.parallel`、`scf.forall`等循环内的Buffer不满足“每次迭代轮转一个槽位”的前提，不会被标记。
 - 本地Buffer可通过`--multibuffer-mode`配置数量。普通Load按目标地址空间使用L1或UB数量；ND2NZ使用L1数量，Fixpipe源Buffer使用L0C数量。
+- L1和L0C的单个缓冲环若已超过设备容量，普通和RegBase PlanMemory会在展开N份实体前直接报告overflow，避免极大N先耗尽Host内存。其余对齐和生命周期冲突仍由原有规划器检查。
 - 用户需保证N倍Buffer占用不超过对应内存空间的容量上限，否则PlanMemory会上报overflow。报错形式与规避方式见[内存管理-使用约束](./plan_memory.md#使用约束)。
