@@ -1,0 +1,71 @@
+{
+  "measurement": "same process; sample-wise AB/BA and reversed mode order; NPU events",
+  "shape": [
+    24,
+    256,
+    64,
+    64,
+    64
+  ],
+  "warmup": 100,
+  "samples": 30,
+  "inner": 50,
+  "correct_before_after": true,
+  "variants": {
+    "baseline": {
+      "off": {
+        "median_us": 75.47680139541626,
+        "mean_us": 75.18347978591919,
+        "p10_us": 74.16920185089111,
+        "p90_us": 76.01119995117188,
+        "min_us": 74.06680107116699,
+        "max_us": 77.46039867401123
+      },
+      "double": {
+        "median_us": 52.87339925765991,
+        "mean_us": 55.733173529307045,
+        "p10_us": 52.70199775695801,
+        "p90_us": 53.187198638916016,
+        "min_us": 52.4724006652832,
+        "max_us": 138.38800430297852
+      },
+      "nbuf": {
+        "median_us": 52.76400089263916,
+        "mean_us": 53.31782706578573,
+        "p10_us": 52.59119987487793,
+        "p90_us": 53.00559997558594,
+        "min_us": 52.353200912475586,
+        "max_us": 66.07880115509033
+      },
+      "nbuf_reduction_vs_off_pct": 30.09242586180455
+    },
+    "candidate": {
+      "off": {
+        "median_us": 75.80520153045654,
+        "mean_us": 76.07393312454224,
+        "p10_us": 75.67279815673828,
+        "p90_us": 76.17479801177979,
+        "min_us": 75.63479900360107,
+        "max_us": 81.97919845581055
+      },
+      "double": {
+        "median_us": 52.88179874420166,
+        "mean_us": 52.93745390574137,
+        "p10_us": 52.75599956512451,
+        "p90_us": 53.02480220794678,
+        "min_us": 52.597599029541016,
+        "max_us": 54.913601875305176
+      },
+      "nbuf": {
+        "median_us": 51.66379928588867,
+        "mean_us": 51.714120070139565,
+        "p10_us": 50.442399978637695,
+        "p90_us": 52.92840003967285,
+        "min_us": 50.35600185394287,
+        "max_us": 54.77280139923096
+      },
+      "nbuf_reduction_vs_off_pct": 31.84663025382036
+    }
+  },
+  "scope": "ND2NZ path: baseline and candidate emitted identical traced IR; these numbers demonstrate Nbuffer benefit, not performance attribution to the plain-L1-load fix."
+}

@@ -12,11 +12,13 @@
 
 | 材料 | 链接 |
 |---|---|
+| 待提交PR描述（尚未发布PR） | [PR_DESCRIPTION.md](PR_DESCRIPTION.md) |
 | 设计、Pass顺序、生命周期/容量/同步策略 | [design/DESIGN.md](design/DESIGN.md) |
 | 从源码构建、lit、DT、设备矩阵与性能复现 | [REPRODUCE.md](REPRODUCE.md) |
 | reviewer规则、匹配结果与建议人选 | [audit/REVIEWERS.md](audit/REVIEWERS.md) |
 | 只有本任务改动的完整补丁 | [audit/submission.patch](audit/submission.patch) |
 | 完整180个性能样本与编译命令/二进制SHA | [results.json](results/performance/results.json)、[CSV](results/performance/raw_samples.csv) |
+| 较早探索数据（含短循环无稳定收益，不用于本修复归因） | [earlier-nd2nz](results/earlier-nd2nz/README.md) |
 | 统计摘要与实际buffer槽数 | [SUMMARY.json](results/performance/SUMMARY.json)、[allocation-checks.json](results/performance/allocation-checks.json) |
 | 性能输入HIR及两版本代表性四阶段IR | [input.mlir](results/performance/input.mlir)、[baseline](results/performance/baseline-nbuf/passes.mlir)、[candidate](results/performance/candidate-nbuf/passes.mlir) |
 | 完整lit结果 | [日志](results/check-bishengir-review-ready.log)、[退出码](results/check-bishengir-review-ready.exit) |
@@ -45,3 +47,7 @@ A3/aarch64，Ubuntu24.04.5，CANN9.2.0、driver26.1.1、Python3.11.15、Triton3.
 这是该代表用例的收益，不是所有模型、更高N普遍优于双缓冲或官方验收结论。950只有IR/Pass验证，未设备实测。普通Triton fractal前端在两版本均有已有convert_layout/stride-align断言；性能采用合法显式HIVM入口，不声称修好了前端。编译器基线版本标签可能仍为c327（当时checkout），其编译器C++恢复官方446641；以原始源码/二进制SHA和命令识别，不能只看version标签。
 
 导出的复现程序只将固定实验目录改为`NBUFFER_ROOT`，未改数学、编译参数、精度或测量方法；原/导出脚本SHA见[provenance.json](repro/provenance.json)。所有材料文件SHA见[MANIFEST.json](MANIFEST.json)。无SSH凭据、个人信息邮件、设备二进制或大构建日志。
+
+## 公开可访问性
+
+同一evidence分支也推送至公开GitHub fork `Miiikuuu/AscendNPU-IR`。匿名HTTP读取首个快照的README、复现命令和原始性能JSON均返回200，逐文件SHA与本地完全相同，见[audit/public-access-first-snapshot.json](audit/public-access-first-snapshot.json)。GitCode已登录网页可见同一内容；其raw域对匿名请求返回403，因此不把raw域当唯一下载入口，可用公开GitHub镜像或Git HTTPS获取evidence分支。材料无需私人工作台权限。

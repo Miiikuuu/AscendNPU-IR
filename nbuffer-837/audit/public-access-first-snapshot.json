@@ -1,0 +1,44 @@
+[
+  {
+    "host": "gitcode",
+    "url": "https://raw.gitcode.com/miku1122/AscendNPU-IR/files/0b8b1c42833240b9b6c40b0234e252486ce2d550/nbuffer-837/README.md",
+    "error": "HTTP Error 403: Forbidden",
+    "authenticated": false
+  },
+  {
+    "host": "gitcode",
+    "url": "https://raw.gitcode.com/miku1122/AscendNPU-IR/files/0b8b1c42833240b9b6c40b0234e252486ce2d550/nbuffer-837/results/performance/results.json",
+    "error": "HTTP Error 403: Forbidden",
+    "authenticated": false
+  },
+  {
+    "host": "gitcode",
+    "url": "https://raw.gitcode.com/miku1122/AscendNPU-IR/files/0b8b1c42833240b9b6c40b0234e252486ce2d550/nbuffer-837/REPRODUCE.md",
+    "error": "HTTP Error 403: Forbidden",
+    "authenticated": false
+  },
+  {
+    "host": "github",
+    "url": "https://raw.githubusercontent.com/Miiikuuu/AscendNPU-IR/0b8b1c42833240b9b6c40b0234e252486ce2d550/nbuffer-837/README.md",
+    "status": 200,
+    "sha256": "de7a51932d029eb5ffe5aa91dbaad25c9d979872751981c1d38e3bb4d6837563",
+    "matches_local": true,
+    "authenticated": false
+  },
+  {
+    "host": "github",
+    "url": "https://raw.githubusercontent.com/Miiikuuu/AscendNPU-IR/0b8b1c42833240b9b6c40b0234e252486ce2d550/nbuffer-837/results/performance/results.json",
+    "status": 200,
+    "sha256": "8f487fbacb4db53ef653b730b10521723a0edff59ffe28f93c8a05d3f8ca7455",
+    "matches_local": true,
+    "authenticated": false
+  },
+  {
+    "host": "github",
+    "url": "https://raw.githubusercontent.com/Miiikuuu/AscendNPU-IR/0b8b1c42833240b9b6c40b0234e252486ce2d550/nbuffer-837/REPRODUCE.md",
+    "status": 200,
+    "sha256": "5bcd2e354afddcb1e6cb01a1406d3423044b44ab34380ab8d0c7191e841a0ccc",
+    "matches_local": true,
+    "authenticated": false
+  }
+]
