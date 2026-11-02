@@ -36,6 +36,7 @@
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/LogicalResult.h"
+#include "llvm/Support/MathExtras.h"
 #include "llvm/Support/WithColor.h"
 #include <algorithm>
 
@@ -1605,6 +1606,23 @@ PlanStatus MemPlanRegBase::PlanLocalMemAddress() {
   dmaFirstPipelineOpt.build(func_);
   // merge from the first storage entry
   MergeInplaceSE();
+  // Reject an impossible local ring before allocating N storage entries. The
+  // unaligned size is a lower bound, so this cannot reject a ring that fits.
+  // Leave alignment and aggregate lifetime conflicts to the normal planner.
+  for (const auto &entry : StorageEntryVec) {
+    auto space = entry->bufInfo->bufferScope;
+    if ((space != AddressSpace::L1 && space != AddressSpace::L0C) ||
+        entry->multiBufferNum < 2)
+      continue;
+    uint64_t bits = entry->bufInfo->constBits;
+    uint64_t count = entry->multiBufferNum;
+    uint64_t capacity = GetBufferSpaceInfo(space).second;
+    if (bits > capacity / count) {
+      failApplyBufferInfo[space] = llvm::SaturatingMultiply(bits, count);
+      return PlanStatus::PLAN_FAILED;
+    }
+  }
+
   ExpandMultiBufferStorageEntry();
   MergeSameScopeSE();
   return PlanMemAddressOfWholeLocalBuffer();
