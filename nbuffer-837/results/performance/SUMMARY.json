@@ -1,0 +1,76 @@
+{
+  "method": "same process; sample-wise AB/BA and reversed mode order; NPU events",
+  "shape": [
+    24,
+    256,
+    64,
+    64,
+    64
+  ],
+  "rtol": 0.001,
+  "atol": 0.001,
+  "stats": {
+    "baseline-off": {
+      "n": 30,
+      "median_us": 74.2635989189148,
+      "mean_us": 74.01009337107341,
+      "min_us": 73.55679988861084,
+      "max_us": 74.92800235748291,
+      "p10_us": 73.57063961029053,
+      "p90_us": 74.39016008377075
+    },
+    "baseline-double": {
+      "n": 30,
+      "median_us": 58.42779874801636,
+      "mean_us": 58.25000015894572,
+      "min_us": 57.45920181274414,
+      "max_us": 59.16759967803955,
+      "p10_us": 57.49547815322876,
+      "p90_us": 58.981882095336914
+    },
+    "baseline-nbuf": {
+      "n": 30,
+      "median_us": 57.75140047073364,
+      "mean_us": 57.81854693094889,
+      "min_us": 57.118000984191895,
+      "max_us": 58.97200107574463,
+      "p10_us": 57.17527961730957,
+      "p90_us": 58.497201919555664
+    },
+    "candidate-off": {
+      "n": 30,
+      "median_us": 74.55600023269653,
+      "mean_us": 74.54484001795451,
+      "min_us": 74.3011999130249,
+      "max_us": 75.09200096130371,
+      "p10_us": 74.3264012336731,
+      "p90_us": 74.72336101531982
+    },
+    "candidate-double": {
+      "n": 30,
+      "median_us": 50.857601165771484,
+      "mean_us": 50.77586682637533,
+      "min_us": 50.34599781036377,
+      "max_us": 51.529197692871094,
+      "p10_us": 50.36039876937866,
+      "p90_us": 51.27288103103638
+    },
+    "candidate-nbuf": {
+      "n": 30,
+      "median_us": 50.07359981536865,
+      "mean_us": 50.12165387471517,
+      "min_us": 50.0275993347168,
+      "max_us": 50.544400215148926,
+      "p10_us": 50.03628206253052,
+      "p90_us": 50.33008098602295
+    }
+  },
+  "nbuf_time_reduction_pct": 13.294570508737403,
+  "candidate_nbuf_vs_n1_reduction_pct": 32.837599040876555,
+  "pairwise_reduction_pct": {
+    "min": 11.534825967807139,
+    "median": 13.127727392378175,
+    "max": 14.827377787840135
+  },
+  "scope": "Explicit HIVM physical-zN input and standard compiler pipeline; frontend fractal conversion failure is tracked separately; no general model speedup claim."
+}

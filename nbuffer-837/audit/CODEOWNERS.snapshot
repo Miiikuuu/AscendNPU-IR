@@ -1,0 +1,262 @@
+# This file lists reviewers that are auto-assigned when a pull request modifies
+# certain files or directories.
+# For each file, only the last successfully matched rule takes effect.
+# Dashboard grouping: module section headings must end in "."
+
+# Documentation.
+/docs/ @wuying123wy @hid90099092 @tanshengshun
+
+# Coding agent guidelines.
+/AGENTS.md @huangyujun123 @hid90099092 @tanshengshun @cxtjjcz
+/CLAUDE.md @huangyujun123 @hid90099092 @tanshengshun @cxtjjcz
+
+# Memory management.
+/bishengir/**/AllocToPointerCast.* @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/**/PlanMemory.* @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/**/*InplaceReuse* @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/**/BufferizableOpInterfaceImpl.* @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/**/OptMemPlanForPipeline.* @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/test/**/*plan-memory* @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/docs/**/*PlanMemory* @wuying123wy @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/docs/**/*plan_memory* @wuying123wy @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+
+# Bufferization.
+/bishengir/include/bishengir/Dialect/Bufferization/ @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/lib/Dialect/Bufferization/ @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+/bishengir/test/Dialect/Bufferization/ @SL25 @ssy_5825 @ykyyky @zhufang_hw @hid90099092 @tanshengshun
+
+# Multi-buffering.
+/bishengir/**/*MultiBuffer* @huangyujun123 @hid90099092 @tanshengshun @renxingdong
+/bishengir/test/**/*multi-buffer* @huangyujun123 @hid90099092 @tanshengshun @renxingdong
+/bishengir/test/**/*multibuffer* @huangyujun123 @hid90099092 @tanshengshun @renxingdong
+
+# Sync management.
+/bishengir/**/GraphSyncSolver/* @AmmarDab3an @tanzirui123123 @hi_sy @hid90099092 @tanshengshun
+/bishengir/**/InjectSync/* @AmmarDab3an @tanzirui123123 @hi_sy @hid90099092 @tanshengshun
+/bishengir/**/InjectBlockSync.* @AmmarDab3an @tanzirui123123 @hi_sy @hid90099092 @tanshengshun
+/bishengir/**/UnitFlagInfoBase.* @AmmarDab3an @tanzirui123123 @hi_sy @hid90099092 @tanshengshun
+/bishengir/test/**/*unit-flag* @AmmarDab3an @tanzirui123123 @hi_sy @hid90099092 @tanshengshun
+
+# AutoBlockify.
+/bishengir/**/AutoBlockify* @Alae-eddine @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/**/*auto-blockify-* @Alae-eddine @jy834507063 @hid90099092 @tanshengshun
+
+# Cube Op Template.
+/bishengir/**/Template/**/Cube/ @Alae-eddine @ZhaoWentengZWT @zhufang_hw @jqran @hid90099092 @tanshengshun
+/bishengir/**/Template/**/Macro/ @Alae-eddine @ZhaoWentengZWT @zhufang_hw @jqran @hid90099092 @tanshengshun
+/bishengir/**/Template/**/Host/ @Alae-eddine @ZhaoWentengZWT @zhufang_hw @jqran @hid90099092 @tanshengshun
+/bishengir/**/Template/**/Fixpipe/ @Alae-eddine @ZhaoWentengZWT @zhufang_hw @jqran @hid90099092 @tanshengshun
+/bishengir/**/Template/**/DMA/Cbuf/ @Alae-eddine @ZhaoWentengZWT @zhufang_hw @jqran @hid90099092 @tanshengshun
+
+# Inline Fixpipe.
+/bishengir/**/InlineFixpipe/ @Alae-eddine @jin-qian7 @jqran @hid90099092 @tanshengshun
+/bishengir/test/**/*inline-fixpipe* @Alae-eddine @jin-qian7 @jqran @hid90099092 @tanshengshun
+/bishengir/test/**/*insert-fixpipe* @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/**/*move-fixpipe* @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+
+# Submodule:llvm-project (ensure synchronization with hivmc)
+/third-party/llvm-project @NoBBAI @hid90099092 @tanshengshun
+
+# Normalize Matmul.
+/bishengir/**/NormalizeMatmul.* @danielcm585 @jy834507063 @jqran @hid90099092 @tanshengshun
+/bishengir/test/**/normalize-matmul* @danielcm585 @jy834507063 @jqran @hid90099092 @tanshengshun
+
+# Cube data layout.
+/bishengir/lib/Dialect/HIVM/Transforms/ConvertLayout/ @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+/bishengir/**/ConvertLayoutUtils.h @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+/bishengir/**/ConvertLayoutCanonicalizations.* @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+/bishengir/**/InferHIVMDataLayout.* @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+/bishengir/**/OpLayoutInterface.* @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+/bishengir/lib/Dialect/HIVM/IR/OpLayoutInterface/ @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/**/*layout* @hocky @jy834507063 @liupengcheng2012 @hid90099092 @tanshengshun
+
+# CODEOWNERS file itself.
+/CODEOWNERS @hid90099092 @tanshengshun
+
+# CV pipelining.
+/bishengir/**/CVPipelining.cpp @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/**/WorkItem.h @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/**/WorklistBuilder.* @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/lib/Dialect/HIVM/Transforms/CreatePreload.cpp @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/cv-pipelining* @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/hivm-create-preload.mlir @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/RegBase/CVPipelining/ @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/test/bishengir-compile/hivm/compile-cv-pipeline-lazy-loading.mlir @gaofangfrank @li-yangguang525 @huangyujun123 @wangtao489 @hid90099092 @tanshengshun
+/bishengir/lib/Dialect/HIVM/Transforms/PipelineV2/ @gaofangfrank @li-yangguang525 @huangyujun123 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/PipelineV2/ @gaofangfrank @li-yangguang525 @huangyujun123 @hid90099092 @tanshengshun
+
+# Split mix kernel.
+/bishengir/**/SplitMixKernel.* @danielcm585 @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/**/split-mix-kernel* @danielcm585 @devoperator @cathychan0027 @hid90099092 @tanshengshun
+
+# CV Data Movement.
+/bishengir/**/InsertLoadStoreForMixCV.cpp @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/**/InsertLoadStoreForMixCV/* @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/**/InsertLoadStoreForScalar.cpp @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/**/InsertCVTightCoupledBuffer.cpp @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/**/MarkTightlyCoupledBuffer.cpp @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/**/InsertWorkSpaceForMixCV.cpp @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/enable-cv-tight-communication.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/insert-load-store-for-mix-cv-legacy.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/insert-load-store-for-mix-cv.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/disable-tight-coupled-buffer.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/enable-cv-tight-communication.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/insert-load-store-for-mix-cv-fixpipe-fractal.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/insert-load-store-for-mix-cv-fractal-block-size.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/insert-load-store-for-mix-cv-legacy.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/insert-load-store-for-mix-cv-scope-to-l1.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/insert-load-store-for-mix-cv.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Regbase/insert-tight-coupled-buffer.mlir @kresna @devoperator @cathychan0027 @hid90099092 @tanshengshun
+
+# CV1:2.
+/bishengir/**/TileAndBindSubBlock.cpp @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/TileAndBindSubBlock/ @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/tile-and-bind-sub-block* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/HIVM/Analysis/DimensionAnalyzer.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/HIVM/Analysis/DimensionMarker.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/HIVM/Analysis/Initializer.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/Dialect/Analysis/DimensionAnalyzer.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/Dialect/Analysis/DimensionMarker.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/Dialect/Analysis/Initializer.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/Dialect/Analysis/ProcessOperations.* @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/Analysis/hivm-dimension-analyzer.mlir @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/lib/Dialect/HIVM/TestHIVMDimensionAnalyzer.cpp @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/HIVMBubbleUpExtractSlice.cpp @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/**/HIVM/**/BubbleUpExtractSlice/ @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/hivm-bubble-up-extract-slice.mlir @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/bubble-up-bufferization.mlir @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+/bishengir/test/lib/Dialect/Utils/TestBubbleUpBufferization.cpp @kang-ingu @henrycliang @ZhaoWentengZWT @renxingdong @jy834507063 @hid90099092 @tanshengshun
+
+/bishengir/hivmc @huchengbei @hid90099092 @tanshengshun
+
+# AVE Loop Optimization.
+/bishengir/**/HIVMAVE/**/AveLoopOptimize.* @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/AveLoopAnalysis.* @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/CostModelInfo/ @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/ave-loop-optimize* @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE i1 UB LD/ST.
+/bishengir/**/HIVMAVE/**/I1opSoftImpl.* @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/i1op-soft-impl* @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/avenormalize_i1_* @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE Layout Optimization.
+/bishengir/**/HIVMAVE/Analyze/ @lijiawei_123 @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/analyze-vector-layout* @lijiawei_123 @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/vector-layout* @lijiawei_123 @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+# Normalization handles both vector layouts and i1 UB loads/stores:
+/bishengir/**/HIVMAVE/**/AVENormalizeOps.* @lijiawei_123 @wzy_00889928 @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE Mask derivation.
+/bishengir/**/AnalyzeArithVectorMask.* @Jiangjiji0527 @linyudong @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/TransformOps/analyze-arith-vector-mask* @Jiangjiji0527 @linyudong @lingfei_wu @hid90099092 @tanshengshun
+
+# AVE Reduce Binary Search Optimization.
+/bishengir/**/HIVMAVE/**/OptimizeReductionLoop.* @wanghuihui @linyudong @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/optimize-reduction-loop* @wanghuihui @linyudong @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE VSSTB.
+/bishengir/**/HIVMAVE/**/ProcessVsstb.* @linyudong @wanghuihui @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/process-vsstb* @linyudong @wanghuihui @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE TO-AVE.
+/bishengir/**/Conversion/VectorToHIVMAVE/ @jiadiliu @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/Conversion/ArithToHIVMAVE/ @jiadiliu @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVM/vector-transferop-to-hivm-aveop* @jiadiliu @lrb @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE TO-AVE-intrinsic.
+/bishengir/**/Conversion/HIVMAVEToAVEIntrin/ @wzy_00889928 @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/convert-hivmave-to-ave-intrin* @wzy_00889928 @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE To Template Library.
+/bishengir/**/Conversion/HIVMAVEToStandard/ @Mark-chen @wanghuihui @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/Interfaces/AVELibraryFunctionOpInterface.* @Mark-chen @wanghuihui @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+# This test covers both template-library and intrinsic lowering:
+/bishengir/test/Dialect/HIVMAVE/convert-hivmave-to-ave-intrin-5.mlir @Mark-chen @wanghuihui @wzy_00889928 @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# AVE Instruction Optimization.
+/bishengir/**/HIVMAVE/**/CombineAVEOPs.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/LegalizeOptHIVMAVE.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/ReplaceWithVectorScalar.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/ScalarBroadcastToVLoad.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/PLTToPGE.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/PLTToPLTM.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/HoistVstas.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/**/HIVMAVE/**/DuplicateUnitMaskBroadcast.* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+/bishengir/test/Dialect/HIVMAVE/duplicate-unit-mask-broadcast* @zzhengxiang @Mark-chen @lingfei_wu @Jiangjiji0527 @hid90099092 @tanshengshun
+
+# nddma.
+/bishengir/**/NDDMA/ @xiechenye @liupengcheng2012 @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/SinkOpToConsumerInLoop.* @xiechenye @liupengcheng2012 @lingfei_wu @hid90099092 @tanshengshun
+
+# pre-vectorize.
+/bishengir/**/InlineBrc.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/FoldExtractInsertPair.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/PreVectorizationFusion.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/PrepareI1Nx1ForVectorization.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+
+# tree-reduce.
+/bishengir/**/TreeReduceV2.* @codeer1 @lingfei_wu @hid90099092 @tanshengshun
+
+# vf simplification.
+/bishengir/**/RemoveMaskFromUnalignedReductionLoop.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/PullSliceIntoVectorFunction.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/SimplifyVFArgs.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/LoopInvariantPromotion.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/UnrollAndForward.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/RemoveRedundantWriteAndReadPair.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/OutlineCopyInVF.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+
+# vf-fusion cost model.
+/bishengir/**/Analysis/VFFusion/ @yeyunpeng1 @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+
+# vf-fusion other strategies.
+/bishengir/**/Analysis/VFFusion/VFFusionKind/AllOpKind.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/Analysis/VFFusion/VFFusionAnalyzer/AllOpKindAnalyzer.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/Analysis/VFFusion/VFFusionKind/UBAwareOpKind.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/Analysis/VFFusion/VFFusionAnalyzer/UBAwareOpKindAnalyzer.* @Hu_JJN @lingfei_wu @hid90099092 @tanshengshun
+
+# vf vectorize.
+/bishengir/**/OutlineScope.* @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/VectorizeOps.* @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/AutoVectorizeV2.* @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/AutoVectorize.* @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/AutoVectorize/ @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/OutlineVectorFunction.* @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/AutoVectorizeVerifier.* @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/Conversion/HFusionToVector/ @Hu_JJN @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+
+# memory reuse.
+/bishengir/**/OutlineAllocInVF.* @lipschitz_von @liupengcheng2012 @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/VFOperandSubstitution.* @lipschitz_von @liupengcheng2012 @lingfei_wu @hid90099092 @tanshengshun
+
+# flatten.
+/bishengir/**/BubbleUpExtractSlice.* @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/Tensor/Transforms/PropagateReshape.* @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/Tensor/Transforms/PropagateReshape/ @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/CanonicalizeTensorReshape.* @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/HFusion/Transforms/FlattenOps.* @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/HFusion/Transforms/Flattener/ @lijiawei_123 @lipschitz_von @lingfei_wu @hid90099092 @tanshengshun
+
+# stride align.
+/bishengir/**/AlignBuffer/ @codeer1 @lingfei_wu @hid90099092 @tanshengshun
+
+
+# vf shallow fusion.
+/bishengir/**/MergeVecScope.* @ciggaco @lingfei_wu @hid90099092 @tanshengshun
+
+# normalize.
+/bishengir/**/LegalizeBool.* @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/LegalizeScalar.* @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/LegalizeBF16.* @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/LegalizeFP8.* @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/NormalizeSliceOps.* @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/HFusion/Transforms/regbase/Normalize/ @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/HFusion/Transforms/regbase/Normalize*.h @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+/bishengir/**/HFusion/regbase/Normalize/ @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+# Shared regbase normalize templates (not under a dialect dir):
+/bishengir/include/bishengir/Transforms/regbase/Normalize/ @ciggaco @xiechenye @lingfei_wu @hid90099092 @tanshengshun
+
+# Custom op.
+/bishengir/**/CustomOp/ @danielcm585 @hid90099092 @tanshengshun
+/bishengir/test/**/custom-op* @danielcm585 @hid90099092 @tanshengshun

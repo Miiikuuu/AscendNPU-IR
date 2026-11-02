@@ -1,0 +1,1263 @@
+{
+  "shape": [
+    24,
+    256,
+    64,
+    64,
+    64
+  ],
+  "input_format": "physical zN A/B, ND C; offline prepacking shared by both variants",
+  "method": "same process; sample-wise AB/BA and reversed mode order; NPU events",
+  "warmup_per_kernel": 100,
+  "samples_per_mode_variant": 30,
+  "inner": 50,
+  "correct_before_after": true,
+  "rtol": 0.001,
+  "atol": 0.001,
+  "identities": [
+    {
+      "variant": "baseline",
+      "mode": "off",
+      "args": [
+        "/workspace/ascendnpu-ir-837/baseline-bin/bishengir-compile",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+        "--target=Ascend910_9382",
+        "--multibuffer-mode=[(gm,1),(l1,1),(l0c,1),(ub,1)]",
+        "--enable-auto-multi-buffer=true",
+        "--enable-optimized-metaop=false",
+        "--enable-hivm-graph-sync-solver=true",
+        "--enable-hivm-cross-core-gss=true",
+        "--enable-tuning-mode=true",
+        "--enable-hfusion-compile=true",
+        "--enable-triton-kernel-compile=true",
+        "--enable-auto-blockify-loop",
+        "--mlir-disable-threading",
+        "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+        "-o",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/baseline-off/kernel"
+      ],
+      "compiler_sha256": "190e6fa43f05c695056d03e11a0c93edd88bbb8ce8c34de2493fed09a9dc8b6a",
+      "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+      "compile_rc": 0,
+      "kernel_sha256": "48c5f70303ebfbcc9375a01cf712f49fe56b6c5946fe28ce5876619ea4cd3c01",
+      "bs_task_type": 20
+    },
+    {
+      "variant": "baseline",
+      "mode": "double",
+      "args": [
+        "/workspace/ascendnpu-ir-837/baseline-bin/bishengir-compile",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+        "--target=Ascend910_9382",
+        "--multibuffer-mode=[(gm,1),(l1,2),(l0c,2),(ub,1)]",
+        "--enable-auto-multi-buffer=true",
+        "--enable-optimized-metaop=false",
+        "--enable-hivm-graph-sync-solver=true",
+        "--enable-hivm-cross-core-gss=true",
+        "--enable-tuning-mode=true",
+        "--enable-hfusion-compile=true",
+        "--enable-triton-kernel-compile=true",
+        "--enable-auto-blockify-loop",
+        "--mlir-disable-threading",
+        "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+        "-o",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/baseline-double/kernel"
+      ],
+      "compiler_sha256": "190e6fa43f05c695056d03e11a0c93edd88bbb8ce8c34de2493fed09a9dc8b6a",
+      "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+      "compile_rc": 0,
+      "kernel_sha256": "20cd7103ce028b21cac7d884d06ce4bf0195c3159d9be5ed57859266f0a79834",
+      "bs_task_type": 20
+    },
+    {
+      "variant": "baseline",
+      "mode": "nbuf",
+      "args": [
+        "/workspace/ascendnpu-ir-837/baseline-bin/bishengir-compile",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+        "--target=Ascend910_9382",
+        "--multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]",
+        "--enable-auto-multi-buffer=true",
+        "--enable-optimized-metaop=false",
+        "--enable-hivm-graph-sync-solver=true",
+        "--enable-hivm-cross-core-gss=true",
+        "--enable-tuning-mode=true",
+        "--enable-hfusion-compile=true",
+        "--enable-triton-kernel-compile=true",
+        "--enable-auto-blockify-loop",
+        "--mlir-disable-threading",
+        "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+        "-o",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/baseline-nbuf/kernel"
+      ],
+      "compiler_sha256": "190e6fa43f05c695056d03e11a0c93edd88bbb8ce8c34de2493fed09a9dc8b6a",
+      "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+      "compile_rc": 0,
+      "kernel_sha256": "cf05cc364cfaa612f661f16d634c1422f82dbed0d931f27b5dbaa218bbcf9fbf",
+      "bs_task_type": 20
+    },
+    {
+      "variant": "candidate",
+      "mode": "off",
+      "args": [
+        "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+        "--target=Ascend910_9382",
+        "--multibuffer-mode=[(gm,1),(l1,1),(l0c,1),(ub,1)]",
+        "--enable-auto-multi-buffer=true",
+        "--enable-optimized-metaop=false",
+        "--enable-hivm-graph-sync-solver=true",
+        "--enable-hivm-cross-core-gss=true",
+        "--enable-tuning-mode=true",
+        "--enable-hfusion-compile=true",
+        "--enable-triton-kernel-compile=true",
+        "--enable-auto-blockify-loop",
+        "--mlir-disable-threading",
+        "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+        "-o",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/candidate-off/kernel"
+      ],
+      "compiler_sha256": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9",
+      "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+      "compile_rc": 0,
+      "kernel_sha256": "48c5f70303ebfbcc9375a01cf712f49fe56b6c5946fe28ce5876619ea4cd3c01",
+      "bs_task_type": 20
+    },
+    {
+      "variant": "candidate",
+      "mode": "double",
+      "args": [
+        "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+        "--target=Ascend910_9382",
+        "--multibuffer-mode=[(gm,1),(l1,2),(l0c,2),(ub,1)]",
+        "--enable-auto-multi-buffer=true",
+        "--enable-optimized-metaop=false",
+        "--enable-hivm-graph-sync-solver=true",
+        "--enable-hivm-cross-core-gss=true",
+        "--enable-tuning-mode=true",
+        "--enable-hfusion-compile=true",
+        "--enable-triton-kernel-compile=true",
+        "--enable-auto-blockify-loop",
+        "--mlir-disable-threading",
+        "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+        "-o",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/candidate-double/kernel"
+      ],
+      "compiler_sha256": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9",
+      "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+      "compile_rc": 0,
+      "kernel_sha256": "fd245f1940e2ea47c7a3028f0738d3ca43c2d168c569a2bea7c3cf81611301bd",
+      "bs_task_type": 20
+    },
+    {
+      "variant": "candidate",
+      "mode": "nbuf",
+      "args": [
+        "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+        "--target=Ascend910_9382",
+        "--multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]",
+        "--enable-auto-multi-buffer=true",
+        "--enable-optimized-metaop=false",
+        "--enable-hivm-graph-sync-solver=true",
+        "--enable-hivm-cross-core-gss=true",
+        "--enable-tuning-mode=true",
+        "--enable-hfusion-compile=true",
+        "--enable-triton-kernel-compile=true",
+        "--enable-auto-blockify-loop",
+        "--mlir-disable-threading",
+        "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+        "-o",
+        "/workspace/ascendnpu-ir-837/results/perf-packed-hir/candidate-nbuf/kernel"
+      ],
+      "compiler_sha256": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9",
+      "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+      "compile_rc": 0,
+      "kernel_sha256": "78fa78ccae37109cfeed2e8af804cc868ff6219ad1cbc6c2a627b4e2398b3408",
+      "bs_task_type": 20
+    }
+  ],
+  "rows": [
+    {
+      "sample": 0,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.49600219726562
+    },
+    {
+      "sample": 0,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 75.03920078277588
+    },
+    {
+      "sample": 0,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.845601081848145
+    },
+    {
+      "sample": 0,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.643601417541504
+    },
+    {
+      "sample": 0,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.97200107574463
+    },
+    {
+      "sample": 0,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.227999687194824
+    },
+    {
+      "sample": 1,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.03680229187012
+    },
+    {
+      "sample": 1,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.118000984191895
+    },
+    {
+      "sample": 1,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.93760013580322
+    },
+    {
+      "sample": 1,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.46920108795166
+    },
+    {
+      "sample": 1,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.67520236968994
+    },
+    {
+      "sample": 1,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.25399780273438
+    },
+    {
+      "sample": 2,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.55679988861084
+    },
+    {
+      "sample": 2,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.34800148010254
+    },
+    {
+      "sample": 2,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.73159885406494
+    },
+    {
+      "sample": 2,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.66279888153076
+    },
+    {
+      "sample": 2,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.57639789581299
+    },
+    {
+      "sample": 2,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.07040023803711
+    },
+    {
+      "sample": 3,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.05760192871094
+    },
+    {
+      "sample": 3,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.161598205566406
+    },
+    {
+      "sample": 3,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.529197692871094
+    },
+    {
+      "sample": 3,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.462801933288574
+    },
+    {
+      "sample": 3,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.63719844818115
+    },
+    {
+      "sample": 3,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.28760051727295
+    },
+    {
+      "sample": 4,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.60199928283691
+    },
+    {
+      "sample": 4,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.32680130004883
+    },
+    {
+      "sample": 4,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.79439830780029
+    },
+    {
+      "sample": 4,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.623202323913574
+    },
+    {
+      "sample": 4,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.42160224914551
+    },
+    {
+      "sample": 4,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.3272008895874
+    },
+    {
+      "sample": 5,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.48679828643799
+    },
+    {
+      "sample": 5,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.19399929046631
+    },
+    {
+      "sample": 5,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.37800216674805
+    },
+    {
+      "sample": 5,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.127198219299316
+    },
+    {
+      "sample": 5,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.64920043945312
+    },
+    {
+      "sample": 5,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.30200099945068
+    },
+    {
+      "sample": 6,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.59399795532227
+    },
+    {
+      "sample": 6,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.3228006362915
+    },
+    {
+      "sample": 6,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.84200096130371
+    },
+    {
+      "sample": 6,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.777602195739746
+    },
+    {
+      "sample": 6,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.39240074157715
+    },
+    {
+      "sample": 6,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.0924015045166
+    },
+    {
+      "sample": 7,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.0439977645874
+    },
+    {
+      "sample": 7,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.219200134277344
+    },
+    {
+      "sample": 7,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.26120090484619
+    },
+    {
+      "sample": 7,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.82479763031006
+    },
+    {
+      "sample": 7,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 75.09200096130371
+    },
+    {
+      "sample": 7,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.30039882659912
+    },
+    {
+      "sample": 8,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.58320236206055
+    },
+    {
+      "sample": 8,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.3775987625122
+    },
+    {
+      "sample": 8,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.7283992767334
+    },
+    {
+      "sample": 8,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.38519859313965
+    },
+    {
+      "sample": 8,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.317999839782715
+    },
+    {
+      "sample": 8,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.35600185394287
+    },
+    {
+      "sample": 9,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.544400215148926
+    },
+    {
+      "sample": 9,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.13479995727539
+    },
+    {
+      "sample": 9,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.51519775390625
+    },
+    {
+      "sample": 9,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.45920181274414
+    },
+    {
+      "sample": 9,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.75359916687012
+    },
+    {
+      "sample": 9,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.59519863128662
+    },
+    {
+      "sample": 10,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.5915994644165
+    },
+    {
+      "sample": 10,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.35760021209717
+    },
+    {
+      "sample": 10,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 59.16759967803955
+    },
+    {
+      "sample": 10,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.36479949951172
+    },
+    {
+      "sample": 10,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.307600021362305
+    },
+    {
+      "sample": 10,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.09960174560547
+    },
+    {
+      "sample": 11,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.047597885131836
+    },
+    {
+      "sample": 11,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.2160005569458
+    },
+    {
+      "sample": 11,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.97879886627197
+    },
+    {
+      "sample": 11,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.50760078430176
+    },
+    {
+      "sample": 11,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.60760116577148
+    },
+    {
+      "sample": 11,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.31359767913818
+    },
+    {
+      "sample": 12,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.57600212097168
+    },
+    {
+      "sample": 12,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.38920021057129
+    },
+    {
+      "sample": 12,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.866400718688965
+    },
+    {
+      "sample": 12,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.34599781036377
+    },
+    {
+      "sample": 12,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.613200187683105
+    },
+    {
+      "sample": 12,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.084800720214844
+    },
+    {
+      "sample": 13,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.064401626586914
+    },
+    {
+      "sample": 13,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.17879772186279
+    },
+    {
+      "sample": 13,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.97879886627197
+    },
+    {
+      "sample": 13,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.49839782714844
+    },
+    {
+      "sample": 13,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.64119911193848
+    },
+    {
+      "sample": 13,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.27800178527832
+    },
+    {
+      "sample": 14,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.56919765472412
+    },
+    {
+      "sample": 14,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.35679912567139
+    },
+    {
+      "sample": 14,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.82400035858154
+    },
+    {
+      "sample": 14,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.370402336120605
+    },
+    {
+      "sample": 14,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.26119899749756
+    },
+    {
+      "sample": 14,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.106401443481445
+    },
+    {
+      "sample": 15,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.02960205078125
+    },
+    {
+      "sample": 15,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.199997901916504
+    },
+    {
+      "sample": 15,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.949201583862305
+    },
+    {
+      "sample": 15,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.617998123168945
+    },
+    {
+      "sample": 15,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.53440189361572
+    },
+    {
+      "sample": 15,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.27320003509521
+    },
+    {
+      "sample": 16,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.56480121612549
+    },
+    {
+      "sample": 16,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.34879779815674
+    },
+    {
+      "sample": 16,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.77399921417236
+    },
+    {
+      "sample": 16,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.38400173187256
+    },
+    {
+      "sample": 16,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.32280158996582
+    },
+    {
+      "sample": 16,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.07120132446289
+    },
+    {
+      "sample": 17,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.03159999847412
+    },
+    {
+      "sample": 17,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.2268009185791
+    },
+    {
+      "sample": 17,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.988402366638184
+    },
+    {
+      "sample": 17,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.666401863098145
+    },
+    {
+      "sample": 17,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.6888017654419
+    },
+    {
+      "sample": 17,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.34120178222656
+    },
+    {
+      "sample": 18,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.57079982757568
+    },
+    {
+      "sample": 18,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.41239833831787
+    },
+    {
+      "sample": 18,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 59.090399742126465
+    },
+    {
+      "sample": 18,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.37600040435791
+    },
+    {
+      "sample": 18,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.488402366638184
+    },
+    {
+      "sample": 18,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.075998306274414
+    },
+    {
+      "sample": 19,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.06319999694824
+    },
+    {
+      "sample": 19,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.17679977416992
+    },
+    {
+      "sample": 19,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.010398864746094
+    },
+    {
+      "sample": 19,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.586798667907715
+    },
+    {
+      "sample": 19,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.66639995574951
+    },
+    {
+      "sample": 19,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.92800235748291
+    },
+    {
+      "sample": 20,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.61159801483154
+    },
+    {
+      "sample": 20,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.40879821777344
+    },
+    {
+      "sample": 20,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.907599449157715
+    },
+    {
+      "sample": 20,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.35600185394287
+    },
+    {
+      "sample": 20,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.45600128173828
+    },
+    {
+      "sample": 20,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.097599029541016
+    },
+    {
+      "sample": 21,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.06040096282959
+    },
+    {
+      "sample": 21,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.188801765441895
+    },
+    {
+      "sample": 21,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.010799407958984
+    },
+    {
+      "sample": 21,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.61000156402588
+    },
+    {
+      "sample": 21,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.57759857177734
+    },
+    {
+      "sample": 21,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.31519985198975
+    },
+    {
+      "sample": 22,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.58920097351074
+    },
+    {
+      "sample": 22,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.3011999130249
+    },
+    {
+      "sample": 22,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.7391996383667
+    },
+    {
+      "sample": 22,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.35679817199707
+    },
+    {
+      "sample": 22,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.37080001831055
+    },
+    {
+      "sample": 22,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.086002349853516
+    },
+    {
+      "sample": 23,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.04720211029053
+    },
+    {
+      "sample": 23,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.20439910888672
+    },
+    {
+      "sample": 23,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.979599952697754
+    },
+    {
+      "sample": 23,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.61000156402588
+    },
+    {
+      "sample": 23,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.71039772033691
+    },
+    {
+      "sample": 23,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.3720006942749
+    },
+    {
+      "sample": 24,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.61599922180176
+    },
+    {
+      "sample": 24,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.3828010559082
+    },
+    {
+      "sample": 24,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.87119770050049
+    },
+    {
+      "sample": 24,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.391597747802734
+    },
+    {
+      "sample": 24,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.33360195159912
+    },
+    {
+      "sample": 24,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.106401443481445
+    },
+    {
+      "sample": 25,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.046401023864746
+    },
+    {
+      "sample": 25,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.20839977264404
+    },
+    {
+      "sample": 25,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.99160194396973
+    },
+    {
+      "sample": 25,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.525200843811035
+    },
+    {
+      "sample": 25,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.66639995574951
+    },
+    {
+      "sample": 25,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.30960178375244
+    },
+    {
+      "sample": 26,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.57840061187744
+    },
+    {
+      "sample": 26,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.30200099945068
+    },
+    {
+      "sample": 26,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 58.97280216217041
+    },
+    {
+      "sample": 26,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.360798835754395
+    },
+    {
+      "sample": 26,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.45280170440674
+    },
+    {
+      "sample": 26,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.0816011428833
+    },
+    {
+      "sample": 27,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.0275993347168
+    },
+    {
+      "sample": 27,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.24160194396973
+    },
+    {
+      "sample": 27,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.9827995300293
+    },
+    {
+      "sample": 27,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.666401863098145
+    },
+    {
+      "sample": 27,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.64960098266602
+    },
+    {
+      "sample": 27,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.35719966888428
+    },
+    {
+      "sample": 28,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 73.5975980758667
+    },
+    {
+      "sample": 28,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.40159797668457
+    },
+    {
+      "sample": 28,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 59.06360149383545
+    },
+    {
+      "sample": 28,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 50.37360191345215
+    },
+    {
+      "sample": 28,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 58.378801345825195
+    },
+    {
+      "sample": 28,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.11240005493164
+    },
+    {
+      "sample": 29,
+      "variant": "candidate",
+      "mode": "nbuf",
+      "us": 50.065999031066895
+    },
+    {
+      "sample": 29,
+      "variant": "baseline",
+      "mode": "nbuf",
+      "us": 57.221598625183105
+    },
+    {
+      "sample": 29,
+      "variant": "candidate",
+      "mode": "double",
+      "us": 51.012001037597656
+    },
+    {
+      "sample": 29,
+      "variant": "baseline",
+      "mode": "double",
+      "us": 57.64920234680176
+    },
+    {
+      "sample": 29,
+      "variant": "candidate",
+      "mode": "off",
+      "us": 74.72000122070312
+    },
+    {
+      "sample": 29,
+      "variant": "baseline",
+      "mode": "off",
+      "us": 74.37839984893799
+    }
+  ]
+}

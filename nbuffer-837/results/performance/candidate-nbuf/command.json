@@ -1,0 +1,25 @@
+{
+  "variant": "candidate",
+  "mode": "nbuf",
+  "args": [
+    "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile",
+    "/workspace/ascendnpu-ir-837/results/perf-packed-hir/input.mlir",
+    "--target=Ascend910_9382",
+    "--multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]",
+    "--enable-auto-multi-buffer=true",
+    "--enable-optimized-metaop=false",
+    "--enable-hivm-graph-sync-solver=true",
+    "--enable-hivm-cross-core-gss=true",
+    "--enable-tuning-mode=true",
+    "--enable-hfusion-compile=true",
+    "--enable-triton-kernel-compile=true",
+    "--enable-auto-blockify-loop",
+    "--mlir-disable-threading",
+    "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+    "-o",
+    "/workspace/ascendnpu-ir-837/results/perf-packed-hir/candidate-nbuf/kernel"
+  ],
+  "compiler_sha256": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9",
+  "input_sha256": "f3868f7bb573fbba129ad7d3d7c59072a3baa5031153243068da4752f91ff612",
+  "compile_rc": 0
+}

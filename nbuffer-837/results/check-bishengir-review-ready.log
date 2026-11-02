@@ -1,0 +1,11 @@
+ninja: Entering directory `build'
+[0/2] Re-checking globbed directories...
+[0/2] Running the bishengir regression tests
+-- Testing: 1340 tests, 8 workers --
+Testing:  0.. 10.. 20.. 30.. 40.. 50.. 60.. 70.. 80.. 90..
+
+Testing Time: 11.83s
+
+Total Discovered Tests: 1340
+  Unsupported:  147 (10.97%)
+  Passed     : 1193 (89.03%)

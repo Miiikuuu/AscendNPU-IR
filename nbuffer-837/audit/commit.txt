@@ -1,0 +1,14 @@
+b2b8e4aee78127532a821296ae7a6c17575506a2 [HIVM][MultiBuffer] fix: honor local buffer counts
+Motivation: Plain GM-to-L1 loads miss L1-only buffering and can inherit
+UB counts. Oversized local rings can exhaust host memory before the
+planners report device capacity overflow.
+Design: Match copy patterns by local address space and reject impossible
+L1/L0C rings before storage-entry expansion in both planners. Cover
+marking, allocation, GSS v1/v2, rotation, disabling and capacity boundaries;
+use multi-buffer test names to match existing reviewer ownership rules.
+Risks: Default counts and explicit marks are preserved. Alignment,
+aggregate lifetime conflicts and overflow retries keep their existing
+handling. Device validation covers A3; 950 validation is limited to IR.
+
+Assisted-by: AI
+

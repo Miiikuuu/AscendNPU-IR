@@ -1,0 +1,49 @@
+Mon Nov  2 09:38:52 UTC 2026
+Linux 1edc67d6bf17 5.10.0-216.0.0.115.oe2203sp4.aarch64 #1 SMP Thu Jun 27 15:22:10 CST 2024 aarch64 aarch64 aarch64 GNU/Linux
+257698037760
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         300G  2.2G  298G   1% /
++------------------------------------------------------------------------------------------------------------------+
+| npu-smi 26.1.1                              Version: 26.1.1                                                      |
++---------------------------+---------------+----------------------------------------------------------------------+
+| NPU   Name                | Health        | Power(W)             Temp(C)                 Hugepages-Usage(page)   |
+| Chip  Phy-ID              | Bus-Id        | AICore(%)            Memory-Usage(MB)        HBM-Usage(MB)           |
++===========================+===============+======================================================================+
+| 6     Ascend910           | OK            | 187.9                52                      0    / 0                |
+| 0     12                  | 0000:85:00.0  | 0                    0    / 0                3214 / 65536            |
++------------------------------------------------------------------------------------------------------------------+
+| 6     Ascend910           | OK            | -                    50                      0    / 0                |
+| 1     13                  | 0000:87:00.0  | 0                    0    / 0                2884 / 65536            |
++===========================+===============+======================================================================+
++---------------------------+---------------+----------------------------------------------------------------------+
+| NPU     Chip              | Process id    | Process name       | Process memory(MB)    | Process id in container |
++===========================+===============+======================================================================+
+| 6       0                 | 58420         | python3            | 112                   | 58420                   |
++===========================+===============+======================================================================+
+Python 3.11.15
+Ubuntu clang version 15.0.7
+cmake version 3.28.3
+1.13.2.git.kitware.jobserver-pipe-1
+5637703c5c07f2740552658b6420c934bcc4f8445a4576a4b75aad741869553d  build/bin/bishengir-opt
+1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9  build/bin/bishengir-compile
+190e6fa43f05c695056d03e11a0c93edd88bbb8ce8c34de2493fed09a9dc8b6a  baseline-bin/bishengir-compile
+c50ec02223bca3a8060ce1264417d664b223032a0bf7058f8769fba3da2911eb  build/lib/meta_op.aic.c220.O0.bc
+3e69de7cebcf570d530384770a4d6a5a9e4caf0cf3490c67fd211892763dc166  build/lib/meta_op.aic.c220.O0.bc.llvm-link.args
+bce14750bae46b332bc296ba8e27ff8c69db389d7d80576f3ddd13c61f7352a2  build/lib/meta_op.aic.c220.O2.bc
+c50ec02223bca3a8060ce1264417d664b223032a0bf7058f8769fba3da2911eb  build/lib/meta_op.aic.c220.O2.bc.linked.bc
+0d026852982f9b35fd8569fe34947838c93270574aa86152a5930d854765f135  build/lib/meta_op.aic.c220.O2.bc.llvm-link.args
+0aab24ec627cdf9f85223175e8c0375d019433a05afc2f20616964e3850e9557  build/lib/meta_op.aiv.c220.O0.bc
+e67f811d9b93101a90881060f377a4e5c1dbc9aa185d16c87bb238c415a9bbab  build/lib/meta_op.aiv.c220.O0.bc.llvm-link.args
+8a1fd3d6d7570242b3d11f7d21599873ab078bf3a34208dcad9fd7b940654645  build/lib/meta_op.aiv.c220.O2.bc
+0aab24ec627cdf9f85223175e8c0375d019433a05afc2f20616964e3850e9557  build/lib/meta_op.aiv.c220.O2.bc.linked.bc
+ab0eb5374d5da7b86b626617c1fb1ee311a03c8c9ac0dd993fe30d41a95d5fa6  build/lib/meta_op.aiv.c220.O2.bc.llvm-link.args
+730ae74d27e2645b3a601e4e4811f76c5e9eb462a53023fb32ccccafc4632a82  build/lib/meta_op.mix.aic.c220.O0.bc
+1ad6c974c89335e1e1b5efa9344604a5f2aecf97149bb4b0222ebdc1d60f86ad  build/lib/meta_op.mix.aic.c220.O0.bc.llvm-link.args
+5bb765c7360614389e485913327cfb4bf70fa892f2f8b7735af8182b2da320bc  build/lib/meta_op.mix.aic.c220.O2.bc
+730ae74d27e2645b3a601e4e4811f76c5e9eb462a53023fb32ccccafc4632a82  build/lib/meta_op.mix.aic.c220.O2.bc.linked.bc
+9b896bdd0674595b0094a94d5d515a30b238c7c6b73c6e5ffe489b08768b6ff5  build/lib/meta_op.mix.aic.c220.O2.bc.llvm-link.args
+1ad8ea6c7be4e4614674e458e739f138e9197991dd4dadcbf507c4f4aa3bc080  build/lib/meta_op.mix.aiv.c220.O0.bc
+78199d27a04b931c0a59322006bdd12daf435e8fdb8c83bbd146c91642c6ebba  build/lib/meta_op.mix.aiv.c220.O0.bc.llvm-link.args
+a909efa3573cc4ce76bd6e29a1719e95bbb35bf9b330374928cc0c1a03c464f4  build/lib/meta_op.mix.aiv.c220.O2.bc
+1ad8ea6c7be4e4614674e458e739f138e9197991dd4dadcbf507c4f4aa3bc080  build/lib/meta_op.mix.aiv.c220.O2.bc.linked.bc
+1e265e0cee1a93d02190779463c956ce5c9b1e9aa7a5df5e73f8df47593dcc7e  build/lib/meta_op.mix.aiv.c220.O2.bc.llvm-link.args

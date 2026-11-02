@@ -1,0 +1,9 @@
+bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp  @hid90099092 @huangyujun123 @renxingdong @tanshengshun
+bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp  @SL25 @hid90099092 @ssy_5825 @tanshengshun @ykyyky @zhufang_hw
+bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp  @SL25 @hid90099092 @ssy_5825 @tanshengshun @ykyyky @zhufang_hw
+bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-multi-buffer-pipeline.mlir  @hid90099092 @huangyujun123 @renxingdong @tanshengshun
+bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-multi-buffer-pipeline.mlir  @hid90099092 @huangyujun123 @renxingdong @tanshengshun
+bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir  @hid90099092 @huangyujun123 @renxingdong @tanshengshun
+bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir  @SL25 @hid90099092 @ssy_5825 @tanshengshun @ykyyky @zhufang_hw
+docs/source/en/developer_guide/features/multi_buffer.md  @hid90099092 @tanshengshun @wuying123wy
+docs/source/zh_cn/developer_guide/features/multi_buffer.md  @hid90099092 @tanshengshun @wuying123wy

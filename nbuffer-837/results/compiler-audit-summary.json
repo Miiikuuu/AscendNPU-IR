@@ -1,0 +1,90 @@
+[
+  {
+    "file": "final-candidate-audit.jsonl",
+    "sha256": "0368c49b2b19944f6288596a1918c36e07a4eaf4aaa3a432f2aca755a5d0842d",
+    "selected": [
+      {
+        "event": "selected",
+        "binaries": {
+          "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9",
+          "/workspace/ascendnpu-ir-837/build/bin/bishengir-opt": "5637703c5c07f2740552658b6420c934bcc4f8445a4576a4b75aad741869553d"
+        }
+      }
+    ],
+    "executed_count": 280,
+    "input_count": 70,
+    "returncodes": [
+      0
+    ],
+    "input_sha256": [
+      "1aad5ab8eb3482d6c37fa9b3f5b0b6e4e5e355c9ab8a95bcfeb55d9ba58f916a",
+      "512d0204b536c780813fd5c3d7e982ceeb8655dc3257b8b9b22f81e187c9428a",
+      "519037e78aa6bb81133fa969ec090e71a2ec67f12680cc31bd88532d1b5ab33e",
+      "6bbb899741e2323f092220d7dfeae629827b381fdb9d1b37681174ec3bcdc85f",
+      "75427dba986199ca1c5e7939f070ba3d9c13d09024a4190883088a2245907486",
+      "cd380830011349ced5312510a8b5ae81a1ac794ce445b37ec7322bab030ed38b",
+      "e3296917966794fd80b156dfe9ba1fa938c94ea65c9c8ede9229ce6a6db6edb3"
+    ]
+  },
+  {
+    "file": "final-candidate-accum-audit.jsonl",
+    "sha256": "ec4d95ce2284761bdaad499f0d0d3d79f73ae36a7695310b32ab5ec95cd84262",
+    "selected": [
+      {
+        "event": "selected",
+        "binaries": {
+          "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9",
+          "/workspace/ascendnpu-ir-837/build/bin/bishengir-opt": "5637703c5c07f2740552658b6420c934bcc4f8445a4576a4b75aad741869553d"
+        }
+      }
+    ],
+    "executed_count": 280,
+    "input_count": 70,
+    "returncodes": [
+      0
+    ],
+    "input_sha256": [
+      "10050b3dff4ff630f4174260f2370926c772406e1237e735ce38fa1c09c00098",
+      "19234c8e89128eacb2dd36b61313ccb0bd05727c06ddbe24aa02e7042218b87d",
+      "32c83572783bc562d677cb6079c318cfdc8e35099dcff3f8f29a6f4d09a12c82",
+      "5c439343a0c2f37f4ea081dafeb5efc95e8b9e84ff56575c29f0a6ea911c3b63",
+      "d38cf4270a08130f41044db611f52c4883787aabcc2585d9b3257907a38357b6",
+      "d9bab124d7c300cff0868ae1fe2d40d206c134cd7769e4f389d5874b73a1fd6c",
+      "fc9387d23f73e275ff5014c212bd583abde98298ecf576cf707a68d96cbe35b7"
+    ]
+  },
+  {
+    "file": "final-baseline-audit.jsonl",
+    "sha256": "dbf0ccfc01a9bec50febded2b2c302372a503de6b9aae4f3a80e7d06a61c8b9f",
+    "selected": [
+      {
+        "event": "selected",
+        "binaries": {
+          "/workspace/ascendnpu-ir-837/baseline-bin/bishengir-compile": "190e6fa43f05c695056d03e11a0c93edd88bbb8ce8c34de2493fed09a9dc8b6a",
+          "/workspace/ascendnpu-ir-837/baseline-bin/bishengir-opt": "139755fc252bcb7c9b3758d36f10eabe699f70d36f7767e854ec0c71308935db"
+        }
+      }
+    ],
+    "executed_count": 560,
+    "input_count": 140,
+    "returncodes": [
+      0
+    ],
+    "input_sha256": [
+      "10050b3dff4ff630f4174260f2370926c772406e1237e735ce38fa1c09c00098",
+      "19234c8e89128eacb2dd36b61313ccb0bd05727c06ddbe24aa02e7042218b87d",
+      "1aad5ab8eb3482d6c37fa9b3f5b0b6e4e5e355c9ab8a95bcfeb55d9ba58f916a",
+      "32c83572783bc562d677cb6079c318cfdc8e35099dcff3f8f29a6f4d09a12c82",
+      "512d0204b536c780813fd5c3d7e982ceeb8655dc3257b8b9b22f81e187c9428a",
+      "519037e78aa6bb81133fa969ec090e71a2ec67f12680cc31bd88532d1b5ab33e",
+      "5c439343a0c2f37f4ea081dafeb5efc95e8b9e84ff56575c29f0a6ea911c3b63",
+      "6bbb899741e2323f092220d7dfeae629827b381fdb9d1b37681174ec3bcdc85f",
+      "75427dba986199ca1c5e7939f070ba3d9c13d09024a4190883088a2245907486",
+      "cd380830011349ced5312510a8b5ae81a1ac794ce445b37ec7322bab030ed38b",
+      "d38cf4270a08130f41044db611f52c4883787aabcc2585d9b3257907a38357b6",
+      "d9bab124d7c300cff0868ae1fe2d40d206c134cd7769e4f389d5874b73a1fd6c",
+      "e3296917966794fd80b156dfe9ba1fa938c94ea65c9c8ede9229ce6a6db6edb3",
+      "fc9387d23f73e275ff5014c212bd583abde98298ecf576cf707a68d96cbe35b7"
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "file": "make_packed_hir.py",
+    "measured_script_sha256": "53d0ad9d602504a353512220622d7ff2e64dd0b92a7fefad2a26d343a9a31f97",
+    "exported_script_sha256": "53d0ad9d602504a353512220622d7ff2e64dd0b92a7fefad2a26d343a9a31f97",
+    "change": "unchanged"
+  },
+  {
+    "file": "packed_hir_runtime.py",
+    "measured_script_sha256": "adfb2dc4f81c2b44ef82fecd25d1c1af57d1a4bc1785119768fae9637e48a004",
+    "exported_script_sha256": "adfb2dc4f81c2b44ef82fecd25d1c1af57d1a4bc1785119768fae9637e48a004",
+    "change": "unchanged"
+  },
+  {
+    "file": "packed_hir_matrix.py",
+    "measured_script_sha256": "fe25b2797222d71064243832d2f8142b80560428750ff4442c615d975738d60e",
+    "exported_script_sha256": "fa82b4cff0caf1b373b84beb9bc725d9c07bc4bb1abf4a240c24319231be177b",
+    "change": "NBUFFER_ROOT replaces fixed lab root; calculations, compilation flags, tolerances and timing unchanged"
+  },
+  {
+    "file": "perf_packed_hir.py",
+    "measured_script_sha256": "1bdc6a2a78b03b4d92286f0603e0039adaf269b5682aa2c2da4d2169ce8f6abe",
+    "exported_script_sha256": "11d71e0688a5780c5bb6b7fe8aa191e05072bdd5d29ad0f04db093e89458c427",
+    "change": "NBUFFER_ROOT replaces fixed lab root; calculations, compilation flags, tolerances and timing unchanged"
+  }
+]

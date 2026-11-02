@@ -1,0 +1,1082 @@
+[
+  {
+    "case": "for-baseline-1-1-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-1-1-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-2-2-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-2-2-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-3-4-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-3-4-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-4-3-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-4-3-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-5-5-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-5-5-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-8-4-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-baseline-8-4-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-1-1-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-1-1-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-2-2-0",
+    "slots": {
+      "cbuf": [
+        2,
+        2
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 2,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-2-2-1",
+    "slots": {
+      "cbuf": [
+        2,
+        2
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 2,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-3-4-0",
+    "slots": {
+      "cbuf": [
+        3,
+        3
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 3,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-3-4-1",
+    "slots": {
+      "cbuf": [
+        3,
+        3
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 3,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-4-3-0",
+    "slots": {
+      "cbuf": [
+        4,
+        4
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 4,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-4-3-1",
+    "slots": {
+      "cbuf": [
+        4,
+        4
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 4,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-5-5-0",
+    "slots": {
+      "cbuf": [
+        5,
+        5
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 5,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-5-5-1",
+    "slots": {
+      "cbuf": [
+        5,
+        5
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 5,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-8-4-0",
+    "slots": {
+      "cbuf": [
+        8,
+        8
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 8,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "for-candidate-8-4-1",
+    "slots": {
+      "cbuf": [
+        8,
+        8
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 8,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-1-1-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-1-1-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-2-2-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-2-2-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-3-4-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-3-4-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-4-3-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-4-3-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-5-5-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-5-5-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-8-4-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-baseline-8-4-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-1-1-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-1-1-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-2-2-0",
+    "slots": {
+      "cbuf": [
+        2,
+        2
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 2,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-2-2-1",
+    "slots": {
+      "cbuf": [
+        2,
+        2
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 2,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-3-4-0",
+    "slots": {
+      "cbuf": [
+        3,
+        3
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 3,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-3-4-1",
+    "slots": {
+      "cbuf": [
+        3,
+        3
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 3,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-4-3-0",
+    "slots": {
+      "cbuf": [
+        4,
+        4
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 4,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-4-3-1",
+    "slots": {
+      "cbuf": [
+        4,
+        4
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 4,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-5-5-0",
+    "slots": {
+      "cbuf": [
+        5,
+        5
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 5,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-5-5-1",
+    "slots": {
+      "cbuf": [
+        5,
+        5
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 5,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-8-4-0",
+    "slots": {
+      "cbuf": [
+        8,
+        8
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 8,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "while-candidate-8-4-1",
+    "slots": {
+      "cbuf": [
+        8,
+        8
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 8,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-1-1-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-1-1-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-2-2-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-2-2-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-3-4-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-3-4-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-4-3-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-4-3-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-5-5-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-5-5-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-8-4-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-baseline-8-4-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-1-1-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-1-1-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        1
+      ]
+    },
+    "expected_l1": 1,
+    "expected_l0c": 1,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-2-2-0",
+    "slots": {
+      "cbuf": [
+        2,
+        2
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 2,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-2-2-1",
+    "slots": {
+      "cbuf": [
+        2,
+        2
+      ],
+      "cc": [
+        2
+      ]
+    },
+    "expected_l1": 2,
+    "expected_l0c": 2,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-3-4-0",
+    "slots": {
+      "cbuf": [
+        3,
+        3
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 3,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-3-4-1",
+    "slots": {
+      "cbuf": [
+        3,
+        3
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 3,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-4-3-0",
+    "slots": {
+      "cbuf": [
+        4,
+        4
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 4,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-4-3-1",
+    "slots": {
+      "cbuf": [
+        4,
+        4
+      ],
+      "cc": [
+        3
+      ]
+    },
+    "expected_l1": 4,
+    "expected_l0c": 3,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-5-5-0",
+    "slots": {
+      "cbuf": [
+        5,
+        5
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 5,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-5-5-1",
+    "slots": {
+      "cbuf": [
+        5,
+        5
+      ],
+      "cc": [
+        5
+      ]
+    },
+    "expected_l1": 5,
+    "expected_l0c": 5,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-8-4-0",
+    "slots": {
+      "cbuf": [
+        8,
+        8
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 8,
+    "expected_l0c": 4,
+    "pass": true
+  },
+  {
+    "case": "nested-candidate-8-4-1",
+    "slots": {
+      "cbuf": [
+        8,
+        8
+      ],
+      "cc": [
+        4
+      ]
+    },
+    "expected_l1": 8,
+    "expected_l0c": 4,
+    "pass": true
+  }
+]

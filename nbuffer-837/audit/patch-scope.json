@@ -1,0 +1,97 @@
+{
+  "task": "AscendNPU-IR #837",
+  "submission_head": "b2b8e4aee78127532a821296ae7a6c17575506a2",
+  "validated_head": "5e1813a86e95db051ff9005fbdcacbaed12af2cc",
+  "validated_base": "446641ac2a1708f9b2dcb25bc7d1a89fa747ea42",
+  "latest_target_at_check": "c46bf6a235d71f80dd20f2c61a27879ba5d16eea",
+  "preserve_validated_base": true,
+  "ahead_of_base": 1,
+  "changed_files": 9,
+  "paths": [
+    {
+      "submission_path": "bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp",
+      "validated_path": "bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp",
+      "bytes": 21425,
+      "sha256": "7dad31bfab9fb95b3a8d3a63e86d127a43c52eeff0d57d5031d1bfbe1c7f2d23",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp",
+      "validated_path": "bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp",
+      "bytes": 137995,
+      "sha256": "c9454021b72c9f03ed470043c127f06bbfb52325dc40d296e0b649ca74b6a3db",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp",
+      "validated_path": "bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp",
+      "bytes": 129097,
+      "sha256": "6b57992382311e3ff3bcd4a5986f37b185d6c04e9ece3b2b42f20c063e98e0a4",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-multi-buffer-pipeline.mlir",
+      "validated_path": "bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-nbuffer-pipeline.mlir",
+      "bytes": 3662,
+      "sha256": "de9ccce0066e2cf2dad778c9df96af0509a8aa9601f46d5a178b9a3a4052e705",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-multi-buffer-pipeline.mlir",
+      "validated_path": "bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-nbuffer-pipeline.mlir",
+      "bytes": 5066,
+      "sha256": "205f7304d334e4fdb4dd774089f1a07ba35aa1f89ae2020bafb0e402f2c6a4a5",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir",
+      "validated_path": "bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir",
+      "bytes": 2282,
+      "sha256": "2a1d0b4d7cbb0a000877e2de157ad599fb74a1da5e1a8bac39a425d4b6808454",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir",
+      "validated_path": "bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir",
+      "bytes": 5949,
+      "sha256": "c5e3a219db82751a4d0fcac41700d547f3e5d7983cfeeeb9bb9138147a2fc63b",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "docs/source/en/developer_guide/features/multi_buffer.md",
+      "validated_path": "docs/source/en/developer_guide/features/multi_buffer.md",
+      "bytes": 16854,
+      "sha256": "082a62d4a5a0c1e0d967586bdf5a268193fe282167f0467c2c8edec22d979765",
+      "byte_identical": true
+    },
+    {
+      "submission_path": "docs/source/zh_cn/developer_guide/features/multi_buffer.md",
+      "validated_path": "docs/source/zh_cn/developer_guide/features/multi_buffer.md",
+      "bytes": 13615,
+      "sha256": "f7ab198d28313f318fe00b8a781a6f35b2826bfb76a5e67500629b67e394fd55",
+      "byte_identical": true
+    }
+  ],
+  "merge_check": {
+    "conflict_free": true,
+    "merged_tree": "94270278b06e6b877b7f4085d28c7f168de83099",
+    "delta_vs_latest_master": [
+      "bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp",
+      "bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp",
+      "bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp",
+      "bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-multi-buffer-pipeline.mlir",
+      "bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-multi-buffer-pipeline.mlir",
+      "bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir",
+      "bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir",
+      "docs/source/en/developer_guide/features/multi_buffer.md",
+      "docs/source/zh_cn/developer_guide/features/multi_buffer.md"
+    ]
+  },
+  "excluded": [
+    "CODEOWNERS edits",
+    "LLVM/submodule changes",
+    "other tasks",
+    "build products",
+    "logs/data/evidence branch contents"
+  ]
+}

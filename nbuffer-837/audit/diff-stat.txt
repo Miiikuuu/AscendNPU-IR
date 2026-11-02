@@ -1,0 +1,10 @@
+ .../Dialect/HIVM/Transforms/MarkMultiBuffer.cpp    | 30 ++++++----
+ .../lib/Dialect/HIVM/Transforms/PlanMemory.cpp     | 18 ++++++
+ .../Dialect/HIVM/Transforms/regbase/PlanMemory.cpp | 18 ++++++
+ .../hivm-gss-l1-l0c-multi-buffer-pipeline.mlir     | 46 +++++++++++++++
+ .../hivm-gss-l1-load-multi-buffer-pipeline.mlir    | 52 +++++++++++++++++
+ .../Dialect/HIVM/mark-multi-buffer-copy-space.mlir | 40 +++++++++++++
+ .../Dialect/HIVM/plan-memory-nbuffer-capacity.mlir | 65 ++++++++++++++++++++++
+ .../en/developer_guide/features/multi_buffer.md    | 25 ++++++---
+ .../zh_cn/developer_guide/features/multi_buffer.md | 23 +++++---
+ 9 files changed, 288 insertions(+), 29 deletions(-)

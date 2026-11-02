@@ -1,0 +1,106 @@
+[
+  {
+    "case": "for-baseline-9-9-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        9
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-baseline-9-9-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        9
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-baseline-16-16-0",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        16
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-baseline-16-16-1",
+    "slots": {
+      "cbuf": [
+        1,
+        1
+      ],
+      "cc": [
+        16
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-candidate-9-9-0",
+    "slots": {
+      "cbuf": [
+        9,
+        9
+      ],
+      "cc": [
+        9
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-candidate-9-9-1",
+    "slots": {
+      "cbuf": [
+        9,
+        9
+      ],
+      "cc": [
+        9
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-candidate-16-16-0",
+    "slots": {
+      "cbuf": [
+        16,
+        16
+      ],
+      "cc": [
+        16
+      ]
+    },
+    "pass": true
+  },
+  {
+    "case": "for-candidate-16-16-1",
+    "slots": {
+      "cbuf": [
+        16,
+        16
+      ],
+      "cc": [
+        16
+      ]
+    },
+    "pass": true
+  }
+]

@@ -1,0 +1,494 @@
+diff --git a/bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp b/bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp
+index d185bde3d..46e9f6d60 100644
+--- a/bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp
++++ b/bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp
+@@ -426,13 +426,20 @@ struct MarkMultiBuffer : public OpRewritePattern<CopyOpType> {
+   using OpRewritePattern<CopyOpType>::OpRewritePattern;
+ 
+   const unsigned multiBufferNum;
++  const AddressSpace addressSpace;
+ 
+-  explicit MarkMultiBuffer(MLIRContext *ctx, unsigned multiBufferNum = 2)
+-      : OpRewritePattern<CopyOpType>(ctx), multiBufferNum(multiBufferNum) {}
++  explicit MarkMultiBuffer(MLIRContext *ctx, unsigned multiBufferNum,
++                           AddressSpace addressSpace)
++      : OpRewritePattern<CopyOpType>(ctx), multiBufferNum(multiBufferNum),
++        addressSpace(addressSpace) {}
+ 
+   LogicalResult matchAndRewrite(CopyOpType copyLikeOp,
+                                 PatternRewriter &rewriter) const override {
+     auto markBufferFunc = [&](mlir::Value &v) -> LogicalResult {
++      // Copy operations can target different local memory spaces. Select the
++      // count by the buffer's space, rather than by the operation name.
++      if (getHIVMAddressSpace(v.getType()) != addressSpace)
++        return failure();
+       auto *allocOp = utils::tracebackMemRef(v).getDefiningOp();
+       if (!utils::isAllocLikeOp(allocOp)) {
+         return failure();
+@@ -604,17 +611,18 @@ void MarkMultiBufferPass::runOnOperation() {
+   if (disableMultiBufferOnUB)
+     mode.ub = 1;
+ 
+-  if (mode.l1 > 1)
+-    patterns.insert<MarkMultiBuffer<hivm::ND2NZOp>>(patterns.getContext(),
+-                                                    mode.l1);
++  if (mode.l1 > 1) {
++    patterns
++        .insert<MarkMultiBuffer<hivm::ND2NZOp>, MarkMultiBuffer<hivm::LoadOp>>(
++            patterns.getContext(), mode.l1, AddressSpace::L1);
++  }
+   if (mode.l0c > 1)
+-    patterns.insert<MarkMultiBuffer<hivm::FixpipeOp>>(patterns.getContext(),
+-                                                      mode.l0c);
++    patterns.insert<MarkMultiBuffer<hivm::FixpipeOp>>(
++        patterns.getContext(), mode.l0c, AddressSpace::L0C);
+   if (mode.ub > 1) {
+-    patterns.insert<MarkMultiBuffer<hivm::LoadOp>>(patterns.getContext(),
+-                                                   mode.ub);
+-    patterns.insert<MarkMultiBuffer<hivm::StoreOp>>(patterns.getContext(),
+-                                                    mode.ub);
++    patterns
++        .insert<MarkMultiBuffer<hivm::LoadOp>, MarkMultiBuffer<hivm::StoreOp>>(
++            patterns.getContext(), mode.ub, AddressSpace::UB);
+   }
+   if (mode.gm > 1 && isMixFuncCore)
+     patterns.insert<MarkWorkspaceMultiBuffer<hivm::StoreOp>,
+diff --git a/bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp b/bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp
+index 9e332f158..4ac588240 100644
+--- a/bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp
++++ b/bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp
+@@ -35,6 +35,7 @@
+ #include "llvm/ADT/STLExtras.h"
+ #include "llvm/Support/Debug.h"
+ #include "llvm/Support/LogicalResult.h"
++#include "llvm/Support/MathExtras.h"
+ #include "llvm/Support/WithColor.h"
+ #include <algorithm>
+ 
+@@ -1882,6 +1883,23 @@ PlanStatus MemPlan::PlanLocalMemAddress() {
+   dmaFirstPipelineOpt.build(func_);
+   // merge from the first storage entry
+   MergeInplaceSE();
++  // Reject an impossible local ring before allocating N storage entries. The
++  // unaligned size is a lower bound, so this cannot reject a ring that fits.
++  // Leave alignment and aggregate lifetime conflicts to the normal planner.
++  for (const auto &entry : StorageEntryVec) {
++    auto space = entry->bufInfo->bufferScope;
++    if ((space != AddressSpace::L1 && space != AddressSpace::L0C) ||
++        entry->multiBufferNum < 2)
++      continue;
++    uint64_t bits = entry->bufInfo->constBits;
++    uint64_t count = entry->multiBufferNum;
++    uint64_t capacity = GetBufferSpaceInfo(space).second;
++    if (bits > capacity / count) {
++      failApplyBufferInfo[space] = llvm::SaturatingMultiply(bits, count);
++      return PlanStatus::PLAN_FAILED;
++    }
++  }
++
+   // collect local storage entry and preload's first storage entry, so this
+   // should be called before ExpandMultiBufferStorageEntry.
+   GeneratePreloadReuseableSE();
+diff --git a/bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp b/bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp
+index 43d1ff792..9579f4517 100644
+--- a/bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp
++++ b/bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp
+@@ -36,6 +36,7 @@
+ #include "llvm/ADT/STLExtras.h"
+ #include "llvm/Support/Debug.h"
+ #include "llvm/Support/LogicalResult.h"
++#include "llvm/Support/MathExtras.h"
+ #include "llvm/Support/WithColor.h"
+ #include <algorithm>
+ 
+@@ -1605,6 +1606,23 @@ PlanStatus MemPlanRegBase::PlanLocalMemAddress() {
+   dmaFirstPipelineOpt.build(func_);
+   // merge from the first storage entry
+   MergeInplaceSE();
++  // Reject an impossible local ring before allocating N storage entries. The
++  // unaligned size is a lower bound, so this cannot reject a ring that fits.
++  // Leave alignment and aggregate lifetime conflicts to the normal planner.
++  for (const auto &entry : StorageEntryVec) {
++    auto space = entry->bufInfo->bufferScope;
++    if ((space != AddressSpace::L1 && space != AddressSpace::L0C) ||
++        entry->multiBufferNum < 2)
++      continue;
++    uint64_t bits = entry->bufInfo->constBits;
++    uint64_t count = entry->multiBufferNum;
++    uint64_t capacity = GetBufferSpaceInfo(space).second;
++    if (bits > capacity / count) {
++      failApplyBufferInfo[space] = llvm::SaturatingMultiply(bits, count);
++      return PlanStatus::PLAN_FAILED;
++    }
++  }
++
+   ExpandMultiBufferStorageEntry();
+   MergeSameScopeSE();
+   return PlanMemAddressOfWholeLocalBuffer();
+diff --git a/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-multi-buffer-pipeline.mlir b/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-multi-buffer-pipeline.mlir
+new file mode 100644
+index 000000000..17559ba54
+--- /dev/null
++++ b/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-l0c-multi-buffer-pipeline.mlir
+@@ -0,0 +1,46 @@
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend910B1},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory)' | FileCheck %s --check-prefix=PLAN
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend910B1},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory,func.func(hivm-graph-sync-solver{solver-version=v1},hivm-enable-multi-buffer,hivm-lower-multi-buffer-counter))' | FileCheck %s --check-prefix=ROTATE
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend910B1},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory,func.func(hivm-graph-sync-solver{solver-version=v2},hivm-enable-multi-buffer,hivm-lower-multi-buffer-counter))' | FileCheck %s --check-prefix=ROTATE
++
++// Compose marking, allocation, synchronization and rotation for unequal local
++// counts. Seven independent output tiles exercise a partial final cycle for
++// both counts. This is an IR contract test; device precision and performance
++// must be checked separately.
++// PLAN-LABEL: func.func @l1_l0c_nbuffer
++// ROTATE-LABEL: func.func @l1_l0c_nbuffer
++func.func @l1_l0c_nbuffer(%a: memref<16x16xf16, #hivm.address_space<gm>>,
++                         %b: memref<16x16xf16, #hivm.address_space<gm>>,
++                         %out: memref<7x16x16xf32, #hivm.address_space<gm>>)
++    attributes {hivm.func_core_type = #hivm.func_core_type<AIC>} {
++  %c0 = arith.constant 0 : index
++  %c1 = arith.constant 1 : index
++  %c7 = arith.constant 7 : index
++  %c16 = arith.constant 16 : index
++  %true = arith.constant true
++  // ROTATE-DAG: %[[THREE:.*]] = arith.constant 3 : i64
++  // ROTATE-DAG: %[[FOUR:.*]] = arith.constant 4 : i64
++  scf.for %i = %c0 to %c7 step %c1 {
++    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
++    %al = memref.alloc() : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
++    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
++    %bl = memref.alloc() : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
++    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf32, #hivm.address_space<cc>>
++    %acc = memref.alloc() : memref<1x1x16x16xf32, #hivm.address_space<cc>>
++    // ROTATE-DAG: arith.remui %{{.*}}, %[[THREE]] : i64
++    // ROTATE-DAG: arith.remui %{{.*}}, %[[FOUR]] : i64
++    hivm.hir.nd2nz {dst_continuous} ins(%a : memref<16x16xf16, #hivm.address_space<gm>>)
++      outs(%al : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>)
++    hivm.hir.nd2nz {dst_continuous} ins(%b : memref<16x16xf16, #hivm.address_space<gm>>)
++      outs(%bl : memref<1x1x16x16xf16, #hivm.address_space<cbuf>>)
++    hivm.hir.mmadL1 ins(%al, %bl, %true, %c16, %c16, %c16 :
++      memref<1x1x16x16xf16, #hivm.address_space<cbuf>>,
++      memref<1x1x16x16xf16, #hivm.address_space<cbuf>>, i1, index, index, index)
++      outs(%acc : memref<1x1x16x16xf32, #hivm.address_space<cc>>)
++    %tile = memref.subview %out[%i, 0, 0] [1, 16, 16] [1, 1, 1] :
++      memref<7x16x16xf32, #hivm.address_space<gm>> to
++      memref<16x16xf32, strided<[16, 1], offset: ?>, #hivm.address_space<gm>>
++    hivm.hir.fixpipe {enable_nz2nd} ins(%acc : memref<1x1x16x16xf32, #hivm.address_space<cc>>)
++      outs(%tile : memref<16x16xf32, strided<[16, 1], offset: ?>, #hivm.address_space<gm>>)
++  }
++  return
++}
+diff --git a/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-multi-buffer-pipeline.mlir b/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-multi-buffer-pipeline.mlir
+new file mode 100644
+index 000000000..2fd373aeb
+--- /dev/null
++++ b/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-multi-buffer-pipeline.mlir
+@@ -0,0 +1,52 @@
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend910B1},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory)' | FileCheck %s --check-prefix=PLAN
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend910B1},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory,func.func(hivm-graph-sync-solver{solver-version=v1},hivm-enable-multi-buffer,hivm-lower-multi-buffer-counter))' | FileCheck %s --check-prefix=ROTATE
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend910B1},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory,func.func(hivm-graph-sync-solver{solver-version=v2},hivm-enable-multi-buffer,hivm-lower-multi-buffer-counter))' | FileCheck %s --check-prefix=ROTATE
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend950PR_950z},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory-regbase)' | FileCheck %s --check-prefix=PLAN
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend950PR_950z},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory-regbase,func.func(hivm-graph-sync-solver{solver-version=v1},hivm-enable-multi-buffer,hivm-lower-multi-buffer-counter))' | FileCheck %s --check-prefix=ROTATE
++// RUN: bishengir-opt %s -pass-pipeline='builtin.module(hacc-append-device-spec{target=Ascend950PR_950z},func.func(hivm-mark-multi-buffer{enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,4),(ub,1)]}),hivm-plan-memory-regbase,func.func(hivm-graph-sync-solver{solver-version=v2},hivm-enable-multi-buffer,hivm-lower-multi-buffer-counter))' | FileCheck %s --check-prefix=ROTATE
++
++// Plain GM->L1 loads of prepacked zN storage must use L1 rather than UB.
++// Compose marking, allocation, synchronization and rotation for unequal local
++// counts. Seven independent output tiles exercise a partial final cycle for
++// both counts. This is an IR contract test; device precision and performance
++// must be checked separately.
++// PLAN-LABEL: func.func @l1_load_nbuffer
++// ROTATE-LABEL: func.func @l1_load_nbuffer
++func.func @l1_load_nbuffer(%a: memref<256xf16, #hivm.address_space<gm>>,
++                         %b: memref<256xf16, #hivm.address_space<gm>>,
++                         %out: memref<7x16x16xf32, #hivm.address_space<gm>>)
++    attributes {hivm.func_core_type = #hivm.func_core_type<AIC>} {
++  %c0 = arith.constant 0 : index
++  %c1 = arith.constant 1 : index
++  %c7 = arith.constant 7 : index
++  %c16 = arith.constant 16 : index
++  %true = arith.constant true
++  // ROTATE-DAG: %[[THREE:.*]] = arith.constant 3 : i64
++  // ROTATE-DAG: %[[FOUR:.*]] = arith.constant 4 : i64
++  scf.for %i = %c0 to %c7 step %c1 {
++    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<256xf16, #hivm.address_space<cbuf>>
++    %al_flat = memref.alloc() : memref<256xf16, #hivm.address_space<cbuf>>
++    %al = memref.expand_shape %al_flat [[0, 1, 2, 3]] output_shape [1, 1, 16, 16] : memref<256xf16, #hivm.address_space<cbuf>> into memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
++    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<256xf16, #hivm.address_space<cbuf>>
++    %bl_flat = memref.alloc() : memref<256xf16, #hivm.address_space<cbuf>>
++    %bl = memref.expand_shape %bl_flat [[0, 1, 2, 3]] output_shape [1, 1, 16, 16] : memref<256xf16, #hivm.address_space<cbuf>> into memref<1x1x16x16xf16, #hivm.address_space<cbuf>>
++    // PLAN-DAG: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<1x1x16x16xf32, #hivm.address_space<cc>>
++    %acc = memref.alloc() : memref<1x1x16x16xf32, #hivm.address_space<cc>>
++    // ROTATE-DAG: arith.remui %{{.*}}, %[[THREE]] : i64
++    // ROTATE-DAG: arith.remui %{{.*}}, %[[FOUR]] : i64
++    hivm.hir.load ins(%a : memref<256xf16, #hivm.address_space<gm>>)
++      outs(%al_flat : memref<256xf16, #hivm.address_space<cbuf>>)
++    hivm.hir.load ins(%b : memref<256xf16, #hivm.address_space<gm>>)
++      outs(%bl_flat : memref<256xf16, #hivm.address_space<cbuf>>)
++    hivm.hir.mmadL1 ins(%al, %bl, %true, %c16, %c16, %c16 :
++      memref<1x1x16x16xf16, #hivm.address_space<cbuf>>,
++      memref<1x1x16x16xf16, #hivm.address_space<cbuf>>, i1, index, index, index)
++      outs(%acc : memref<1x1x16x16xf32, #hivm.address_space<cc>>)
++    %tile = memref.subview %out[%i, 0, 0] [1, 16, 16] [1, 1, 1] :
++      memref<7x16x16xf32, #hivm.address_space<gm>> to
++      memref<16x16xf32, strided<[16, 1], offset: ?>, #hivm.address_space<gm>>
++    hivm.hir.fixpipe {enable_nz2nd} ins(%acc : memref<1x1x16x16xf32, #hivm.address_space<cc>>)
++      outs(%tile : memref<16x16xf32, strided<[16, 1], offset: ?>, #hivm.address_space<gm>>)
++  }
++  return
++}
+diff --git a/bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir b/bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir
+new file mode 100644
+index 000000000..072c29af3
+--- /dev/null
++++ b/bishengir/test/Dialect/HIVM/mark-multi-buffer-copy-space.mlir
+@@ -0,0 +1,40 @@
++// RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,1),(ub,1)]" | FileCheck %s --check-prefix=L1
++// RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,1),(ub,5)]" | FileCheck %s --check-prefix=UB
++// RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,3),(l0c,1),(ub,5)]" | FileCheck %s --check-prefix=BOTH
++// RUN: bishengir-opt %s --hivm-mark-multi-buffer="enable-auto=false multibuffer-mode=[(gm,1),(l1,3),(l0c,1),(ub,5)]" | FileCheck %s --check-prefix=OFF
++
++// A plain GM->L1 load must use the L1 count, independently of UB settings.
++// L1-LABEL: func.func @copy_spaces
++// UB-LABEL: func.func @copy_spaces
++// BOTH-LABEL: func.func @copy_spaces
++// OFF-LABEL: func.func @copy_spaces
++// OFF-NOT: annotation.mark
++func.func @copy_spaces(%in: memref<16x16xf32, #hivm.address_space<gm>>,
++                       %out: memref<16x16xf32, #hivm.address_space<gm>>) {
++  %c0 = arith.constant 0 : index
++  %c1 = arith.constant 1 : index
++  %c7 = arith.constant 7 : index
++  scf.for %i = %c0 to %c7 step %c1 {
++    // L1: %[[A:.*]] = memref.alloc()
++    // L1-NEXT: annotation.mark %[[A]] {hivm.multi_buffer = 3 : i32}
++    // UB: %[[A:.*]] = memref.alloc()
++    // UB-NOT: annotation.mark %[[A]]
++    // BOTH: %[[A:.*]] = memref.alloc()
++    // BOTH-NEXT: annotation.mark %[[A]] {hivm.multi_buffer = 3 : i32}
++    %a = memref.alloc() : memref<16x16xf32, #hivm.address_space<cbuf>>
++    hivm.hir.load ins(%in : memref<16x16xf32, #hivm.address_space<gm>>)
++      outs(%a : memref<16x16xf32, #hivm.address_space<cbuf>>)
++    // L1: %[[B:.*]] = memref.alloc()
++    // L1-NOT: annotation.mark %[[B]]
++    // UB: %[[B:.*]] = memref.alloc()
++    // UB-NEXT: annotation.mark %[[B]] {hivm.multi_buffer = 5 : i32}
++    // BOTH: %[[B:.*]] = memref.alloc()
++    // BOTH-NEXT: annotation.mark %[[B]] {hivm.multi_buffer = 5 : i32}
++    %b = memref.alloc() : memref<16x16xf32, #hivm.address_space<ub>>
++    hivm.hir.load ins(%in : memref<16x16xf32, #hivm.address_space<gm>>)
++      outs(%b : memref<16x16xf32, #hivm.address_space<ub>>)
++    hivm.hir.store ins(%b : memref<16x16xf32, #hivm.address_space<ub>>)
++      outs(%out : memref<16x16xf32, #hivm.address_space<gm>>)
++  }
++  return
++}
+diff --git a/bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir b/bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir
+new file mode 100644
+index 000000000..cdde21777
+--- /dev/null
++++ b/bishengir/test/Dialect/HIVM/plan-memory-nbuffer-capacity.mlir
+@@ -0,0 +1,65 @@
++// RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,8),(l0c,1),(ub,1)]" -hivm-plan-memory -split-input-file | FileCheck %s --check-prefix=L1-FIT
++// RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,4),(ub,1)]" -hivm-plan-memory -split-input-file | FileCheck %s --check-prefix=CC-FIT
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,9),(l0c,1),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-OVER
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,5),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-OVER
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,2147483647),(l0c,1),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-HUGE
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,2147483647),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-HUGE
++// RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,8),(l0c,1),(ub,1)]" -hivm-plan-memory-regbase -split-input-file | FileCheck %s --check-prefix=L1-FIT
++// RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,4),(ub,1)]" -hivm-plan-memory-regbase -split-input-file | FileCheck %s --check-prefix=CC-FIT
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,9),(l0c,1),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-OVER
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,5),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-OVER
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,2147483647),(l0c,1),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-HUGE
++// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,2147483647),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-HUGE
++
++// The device limits are in bits: L1=4194304, L0C=1048576. All slots must
++// fit, including when the loop has fewer iterations than the slot count.
++// Maximum accepted signed-i32 counts must report capacity failure without
++// constructing billions of StorageEntries first, in either planner.
++// L1-HUGE: cbuf overflow, requires 1125899906318336 bits while 4194304 bits available!
++// CC-HUGE: cc overflow, requires 562949953159168 bits while 1048576 bits available!
++// L1-OVER: cbuf overflow, requires 4718592 bits while 4194304 bits available!
++// CC-OVER: cc overflow, requires 1310720 bits while 1048576 bits available!
++// L1-FIT-LABEL: func.func @l1_capacity
++// L1-FIT: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<32x4x16x16xf16, #hivm.address_space<cbuf>>
++func.func @l1_capacity(%in: memref<64x512xf16, #hivm.address_space<gm>>) {
++  %c0 = arith.constant 0 : index
++  %c1 = arith.constant 1 : index
++  %c2 = arith.constant 2 : index
++  scf.for %i = %c0 to %c2 step %c1 {
++    %l1 = memref.alloc() : memref<32x4x16x16xf16, #hivm.address_space<cbuf>>
++    hivm.hir.nd2nz {dst_continuous} ins(%in : memref<64x512xf16, #hivm.address_space<gm>>)
++      outs(%l1 : memref<32x4x16x16xf16, #hivm.address_space<cbuf>>)
++  }
++  return
++}
++
++// -----
++// CC-FIT-LABEL: func.func @l0c_capacity
++// CC-FIT: hivm.hir.pointer_cast(%{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}, %{{[^,()]+}}) : memref<8x4x16x16xf32, #hivm.address_space<cc>>
++func.func @l0c_capacity(%a: memref<64x16xf16, #hivm.address_space<gm>>,
++                       %b: memref<16x128xf16, #hivm.address_space<gm>>,
++                       %out: memref<64x128xf32, #hivm.address_space<gm>>) {
++  %c0 = arith.constant 0 : index
++  %c1 = arith.constant 1 : index
++  %c2 = arith.constant 2 : index
++  %c16 = arith.constant 16 : index
++  %c64 = arith.constant 64 : index
++  %c128 = arith.constant 128 : index
++  %true = arith.constant true
++  scf.for %i = %c0 to %c2 step %c1 {
++    %al = memref.alloc() : memref<1x4x16x16xf16, #hivm.address_space<cbuf>>
++    %bl = memref.alloc() : memref<8x1x16x16xf16, #hivm.address_space<cbuf>>
++    hivm.hir.nd2nz {dst_continuous} ins(%a : memref<64x16xf16, #hivm.address_space<gm>>)
++      outs(%al : memref<1x4x16x16xf16, #hivm.address_space<cbuf>>)
++    hivm.hir.nd2nz {dst_continuous} ins(%b : memref<16x128xf16, #hivm.address_space<gm>>)
++      outs(%bl : memref<8x1x16x16xf16, #hivm.address_space<cbuf>>)
++    %cc = memref.alloc() : memref<8x4x16x16xf32, #hivm.address_space<cc>>
++    hivm.hir.mmadL1 ins(%al, %bl, %true, %c64, %c128, %c16 :
++      memref<1x4x16x16xf16, #hivm.address_space<cbuf>>,
++      memref<8x1x16x16xf16, #hivm.address_space<cbuf>>, i1, index, index, index)
++      outs(%cc : memref<8x4x16x16xf32, #hivm.address_space<cc>>)
++    hivm.hir.fixpipe {enable_nz2nd} ins(%cc : memref<8x4x16x16xf32, #hivm.address_space<cc>>)
++      outs(%out : memref<64x128xf32, #hivm.address_space<gm>>)
++  }
++  return
++}
+diff --git a/docs/source/en/developer_guide/features/multi_buffer.md b/docs/source/en/developer_guide/features/multi_buffer.md
+index 710a9109c..89e87ecfa 100644
+--- a/docs/source/en/developer_guide/features/multi_buffer.md
++++ b/docs/source/en/developer_guide/features/multi_buffer.md
+@@ -60,7 +60,7 @@ The compiler identifies multi-buffer candidates by memory hierarchy level. Diffe
+ | Memory Hierarchy | Operation That Triggers the Marker | Overlapped Pipeline | Benefit Pattern |
+ |-----|-----|-----|-----|
+ | GM (Workspace) | `hivm.hir.store` and `hivm.hir.fixpipe` that write the Workspace | Cross-core parallelism between the Cube core and the Vector core | In MIX operators, the Cube computation results are passed to the Vector core through the Workspace for further processing. Multiple Workspace copies allow the two cores to work simultaneously with a one-iteration offset, rather than waiting for each other |
+-| L1 (cbuf) | `hivm.hir.nd2nz` | MTE2 with MTE1 and M | The loading of the left and right matrices of matrix multiplication overlaps with the Cube computation of the current tile |
++| L1 (cbuf) | `hivm.hir.nd2nz`, `hivm.hir.load` into L1 | MTE2 with MTE1 and M | The loading of the left and right matrices of matrix multiplication overlaps with the Cube computation of the current tile |
+ | L0C | `hivm.hir.fixpipe` | M with FIX | While the previous matrix multiplication result is being moved out of L0C, the next matrix multiplication can start accumulating |
+ | UB | `hivm.hir.load` and `hivm.hir.store` | MTE2, V, and MTE3 | For pure Vector operators and the Vector side of MIX operators, the load, compute, and store stages run as a three-stage pipeline in parallel |
+ 
+@@ -83,7 +83,7 @@ In addition, multi-buffer changes the synchronization structure (both the intra-
+ 
+ Enabling multi-buffer consists of four steps, each handled by a different Pass:
+ 
+-1. **Marking**: `-hivm-mark-multi-buffer` identifies candidate buffers by memory hierarchy and generates `annotation.mark {hivm.multi_buffer = N}` at their allocation points. For local buffers, N is fixed at 2; for GM Workspace, N is specified by `--set-workspace-multibuffer`.
++1. **Marking**: `-hivm-mark-multi-buffer` identifies candidate buffers by memory hierarchy and generates `annotation.mark {hivm.multi_buffer = N}` at their allocation points. N can be selected per memory level with `--multibuffer-mode`; without an explicit mode, target-specific defaults apply.
+ 2. **Address allocation**: PlanMemory allocates N addresses for marked buffers and generates `hivm.hir.pointer_cast` carrying multiple offsets.
+ 3. **Synchronization insertion**: Automatic synchronization assigns flag IDs and event IDs in a slot-rotating manner, ensuring that producers and consumers of the same slot are matched in pairs.
+ 4. **Slot selection**: `-hivm-enable-multi-buffer` introduces the iteration counter `hivm.hir.multi_buffer_counter`, which takes the modulo of N to select the address actually used in the current iteration.
+@@ -144,11 +144,17 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-of-local-buffer=no-limit
+ bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
+ ```
+ 
+-## Future Evolution
++## Per-Level Buffer Counts
+ 
+-The three `limit`-type options above each constrain a portion of the memory hierarchy. Their semantics overlap with one another and are all expressed in a "restriction" manner, which makes them poorly readable: they can neither directly express "enable multi-buffer only for L1" nor specify different buffer counts for different levels.
++`--multibuffer-mode` specifies the counts for GM, L1, L0C and UB independently. The legacy `limit` options remain available for compatibility. An explicit mode selects the counts; the automatic multi-buffer master switch still applies.
+ 
+-In the future, the three options `--limit-auto-multi-buffer-only-for-local-buffer`, `--limit-auto-multi-buffer-of-local-buffer`, and `--limit-auto-multi-buffer-buffer` are planned to be deprecated and merged into a single positively-expressed `--multibuffer-mode` option, which directly specifies the multi-buffer count enabled for each of the four levels GM, L1, L0C, and UB:
++For example, use three L1 slots and four L0C slots while disabling GM and UB multi-buffering:
++
++```bash
++bishengir-compile input.mlir --multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 4), (ub, 1)]"
++```
++
++Each tuple specifies the number of physical slots:
+ 
+ ```bash
+ --multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 2), (ub, 2)]"
+@@ -160,10 +166,10 @@ Value conventions:
+ - Equal to 1: multi-buffer is disabled for this level (only one buffer exists).
+ - Equal to 0: invalid configuration, resulting in a compilation error.
+ 
+-For example, to enable multi-buffer only for L1:
++For example, to enable triple buffering only for L1:
+ 
+ ```bash
+---multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]"
++--multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 1), (ub, 1)]"
+ ```
+ 
+ The equivalence between the new and old options is as follows, which can be used to migrate existing configurations. The following table uses Ascend 950PR/Ascend 950DT as the baseline, that is, the target is a MIX operator and the other options remain at their defaults (the GM count takes the default value 2 of `--set-workspace-multibuffer`):
+@@ -177,11 +183,12 @@ The equivalence between the new and old options is as follows, which can be used
+ | `--limit-auto-multi-buffer-buffer=only-cube` | `[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]` |
+ | `--limit-auto-multi-buffer-buffer=only-vector` | `[(gm, 2), (l1, 1), (l0c, 1), (ub, 2)]` |
+ 
+-> Note: `--multibuffer-mode` is not yet available. This section is only intended to illustrate the evolution direction. A one-version compatibility period will be retained when the option is switched, and it will be synchronized in the release notes at that time.
++> Specify all four levels exactly once. A higher count does not guarantee a speedup; choose it using capacity, synchronization resources and measurements.
+ 
+ ## Usage Constraints
+ 
+ - `--limit-auto-multi-buffer-only-for-local-buffer` and `--limit-auto-multi-buffer-buffer` take effect only for functions whose core type is MIX. Pure Cube or pure Vector operators have no GM Workspace handover and no Cube-side/Vector-side division, so configuring these two options does not change their behavior.
+ - A multi-buffer candidate must be located inside a loop, and all ancestor loops from the Buffer allocation point to the outermost loop must be `scf.for` or `scf.while`. Buffers located inside loops such as `scf.parallel` and `scf.forall` do not satisfy the premise of "rotating one slot per iteration" and will not be marked.
+-- The number of multi-buffers for a local Buffer is fixed at 2 and cannot be adjusted through compilation options; only the number of GM Workspaces can be configured through `--set-workspace-multibuffer`.
++- Local buffer counts can be configured with `--multibuffer-mode`. Plain loads use the L1 or UB count according to their destination space; ND2NZ uses the L1 count, and Fixpipe sources use the L0C count.
++- If a single L1 or L0C ring already exceeds device capacity, both PlanMemory variants report overflow before expanding N storage entries. This prevents enormous counts from exhausting host memory first; alignment and lifetime conflicts remain with the normal planner.
+ - Users must ensure that the N-fold Buffer usage does not exceed the capacity limit of the corresponding memory space; otherwise, PlanMemory reports an overflow. For the error form and the workaround, see [Memory Management - Usage Constraints](./plan_memory.md#usage-constraints).
+diff --git a/docs/source/zh_cn/developer_guide/features/multi_buffer.md b/docs/source/zh_cn/developer_guide/features/multi_buffer.md
+index 9c6427bff..633e2720a 100644
+--- a/docs/source/zh_cn/developer_guide/features/multi_buffer.md
++++ b/docs/source/zh_cn/developer_guide/features/multi_buffer.md
+@@ -60,7 +60,7 @@ iter 2:                                 [MTE2 load buf0][ V compute buf0 ]...
+ | 内存层次 | 触发标记的操作 | 重叠的流水线 | 收益形态 |
+ |-----|-----|-----|-----|
+ | GM（Workspace） | 写Workspace的`hivm.hir.store`、`hivm.hir.fixpipe` | Cube核与Vector核跨核并行 | MIX算子中Cube的计算结果经Workspace交给Vector继续处理。多份Workspace让两个核错开一个迭代同时工作，而非互相等待 |
+-| L1（cbuf） | `hivm.hir.nd2nz` | MTE2与MTE1、M | 矩阵乘左右矩阵的搬入与当前分块的Cube计算重叠 |
++| L1（cbuf） | `hivm.hir.nd2nz`、搬入L1的`hivm.hir.load` | MTE2与MTE1、M | 矩阵乘左右矩阵的搬入与当前分块的Cube计算重叠 |
+ | L0C | `hivm.hir.fixpipe` | M与FIX | 上一次矩阵乘结果搬出L0C的同时，下一次矩阵乘可以开始累加 |
+ | UB | `hivm.hir.load`、`hivm.hir.store` | MTE2、V、MTE3 | 纯Vector算子以及MIX算子的Vector侧，搬入、计算、搬出三段流水并行 |
+ 
+@@ -83,7 +83,7 @@ iter 2:                                 [MTE2 load buf0][ V compute buf0 ]...
+ 
+ 多缓冲的使能分为四步，分别由不同的Pass承担：
+ 
+-1. **标记**：`-hivm-mark-multi-buffer`按内存层次识别候选Buffer，在其分配点上生成`annotation.mark {hivm.multi_buffer = N}`。本地Buffer的N固定为2，GM Workspace的N由`--set-workspace-multibuffer`指定。
++1. **标记**：`-hivm-mark-multi-buffer`按内存层次识别候选Buffer，在其分配点上生成`annotation.mark {hivm.multi_buffer = N}`。N可通过`--multibuffer-mode`按内存层次指定；未显式配置时沿用各目标平台的默认值。
+ 2. **分配地址**：PlanMemory为带标记的Buffer分配N份地址，生成携带多个偏移的`hivm.hir.pointer_cast`。
+ 3. **插入同步**：自动同步按槽位轮转分配flag ID与event ID，保证同一槽位的生产者与消费者成对匹配。
+ 4. **选择槽位**：`-hivm-enable-multi-buffer`引入迭代计数器`hivm.hir.multi_buffer_counter`，对N取模选出当次迭代实际使用的地址。
+@@ -144,11 +144,15 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-of-local-buffer=no-limit
+ bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
+ ```
+ 
+-## 后续演进
++## 按内存层次指定数量
+ 
+-上述三个`limit`类选项各自约束一部分内存层次，语义相互交叠且都以“限制”方式表达，可读性较差：既无法直接表达“只对L1开启多缓冲”，也无法为不同层次指定不同的缓冲数量。
++可使用一个选项独立控制各层的数量，例如让L1使用3槽、L0C使用4槽，并关闭GM与UB多缓冲：
+ 
+-后续计划废弃`--limit-auto-multi-buffer-only-for-local-buffer`、`--limit-auto-multi-buffer-of-local-buffer`、`--limit-auto-multi-buffer-buffer`三个选项，合并为一个正向表达的`--multibuffer-mode`选项，直接指定GM、L1、L0C、UB四个内存层次各自开启的多缓冲数量：
++```bash
++bishengir-compile input.mlir --multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 4), (ub, 1)]"
++```
++
++`--multibuffer-mode`直接指定GM、L1、L0C、UB四个内存层次的多缓冲数量。旧的三个`limit`类选项保留用于兼容；显式mode决定各层数量，自动多缓冲总开关仍然有效：
+ 
+ ```bash
+ --multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 2), (ub, 2)]"
+@@ -160,10 +164,10 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
+ - 数量等于1：该内存层次关闭多缓冲（只有一份Buffer）。
+ - 数量等于0：非法配置，编译报错。
+ 
+-例如只对L1开启多缓冲：
++例如只对L1开启三缓冲：
+ 
+ ```bash
+---multibuffer-mode="[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]"
++--multibuffer-mode="[(gm, 1), (l1, 3), (l0c, 1), (ub, 1)]"
+ ```
+ 
+ 新旧选项的等价关系如下，可用于迁移现有配置。下表以Ascend 950PR&950DT系列产品为基准，即目标为MIX算子、其余选项保持默认（GM数量取`--set-workspace-multibuffer`的默认值2）：
+@@ -177,11 +181,12 @@ bishengir-compile input.mlir --limit-auto-multi-buffer-buffer=only-vector
+ | `--limit-auto-multi-buffer-buffer=only-cube` | `[(gm, 2), (l1, 2), (l0c, 1), (ub, 1)]` |
+ | `--limit-auto-multi-buffer-buffer=only-vector` | `[(gm, 2), (l1, 1), (l0c, 1), (ub, 2)]` |
+ 
+-> 说明：`--multibuffer-mode`尚未提供，本节仅用于说明演进方向。选项切换时会保留一个版本的兼容期，届时在版本说明中同步。
++> 必须提供gm、l1、l0c、ub全部四层，不能重复或遗漏。配置数量不保证性能收益；需结合容量、同步资源和实测选择。
+ 
+ ## 使用约束
+ 
+ - `--limit-auto-multi-buffer-only-for-local-buffer`与`--limit-auto-multi-buffer-buffer`仅对核类型为MIX的函数生效。纯Cube或纯Vector算子不存在GM Workspace交接，也不存在Cube侧与Vector侧的划分，配置这两个选项不会改变行为。
+ - 多缓冲候选必须位于循环内，且从Buffer分配点到最外层的所有祖先循环都必须是`scf.for`或`scf.while`。位于`scf.parallel`、`scf.forall`等循环内的Buffer不满足“每次迭代轮转一个槽位”的前提，不会被标记。
+-- 本地Buffer的多缓冲数量固定为2，不可通过编译选项调整；仅GM Workspace的数量可通过`--set-workspace-multibuffer`配置。
++- 本地Buffer可通过`--multibuffer-mode`配置数量。普通Load按目标地址空间使用L1或UB数量；ND2NZ使用L1数量，Fixpipe源Buffer使用L0C数量。
++- L1和L0C的单个缓冲环若已超过设备容量，普通和RegBase PlanMemory会在展开N份实体前直接报告overflow，避免极大N先耗尽Host内存。其余对齐和生命周期冲突仍由原有规划器检查。
+ - 用户需保证N倍Buffer占用不超过对应内存空间的容量上限，否则PlanMemory会上报overflow。报错形式与规避方式见[内存管理-使用约束](./plan_memory.md#使用约束)。

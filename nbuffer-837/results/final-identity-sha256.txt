@@ -1,0 +1,14 @@
+Version=9.2.0
+version_dir=cann
+required_package_runtime_version="9.2"
+required_package_ge-executor_version="9.2"
+required_package_metadef_version="9.2"
+required_package_bisheng-compiler_version="9.2"
+7dad31bfab9fb95b3a8d3a63e86d127a43c52eeff0d57d5031d1bfbe1c7f2d23  source/bishengir/lib/Dialect/HIVM/Transforms/MarkMultiBuffer.cpp
+c9454021b72c9f03ed470043c127f06bbfb52325dc40d296e0b649ca74b6a3db  source/bishengir/lib/Dialect/HIVM/Transforms/PlanMemory.cpp
+6b57992382311e3ff3bcd4a5986f37b185d6c04e9ece3b2b42f20c063e98e0a4  source/bishengir/lib/Dialect/HIVM/Transforms/regbase/PlanMemory.cpp
+205f7304d334e4fdb4dd774089f1a07ba35aa1f89ae2020bafb0e402f2c6a4a5  source/bishengir/test/Dialect/HIVM/SyncSolver/hivm-gss-l1-load-nbuffer-pipeline.mlir
+2c302b996b83bdf424fca9de57a6f744b119d4ac3aa4334a5847f09a351fbe5e  dt/src/modules/cube_vector/test_l1_l0c_nbuffer.py
+8f487fbacb4db53ef653b730b10521723a0edff59ffe28f93c8a05d3f8ca7455  results/perf-packed-hir/results.json
+9f69b54e175d99a87b8f78a0b59e5a2de0df8b4c15ccca9ce644a12adf323960  results/packed-hir-matrix/results.json
+8ff224aaee280b32bd94067b61336ee0731f7140bd5c7f35dcc5621ba28ccaf9  results/packed-hir-event-pressure/results.json

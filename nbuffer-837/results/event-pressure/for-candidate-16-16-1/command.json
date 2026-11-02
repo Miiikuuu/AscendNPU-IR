@@ -1,0 +1,23 @@
+{
+  "case": "for-candidate-16-16-1",
+  "args": [
+    "/workspace/ascendnpu-ir-837/build/bin/bishengir-compile",
+    "/workspace/ascendnpu-ir-837/results/packed-hir-event-pressure/for.mlir",
+    "--target=Ascend910_9382",
+    "--multibuffer-mode=[(gm,1),(l1,16),(l0c,16),(ub,1)]",
+    "--enable-auto-multi-buffer=true",
+    "--enable-optimized-metaop=false",
+    "--enable-hivm-graph-sync-solver=true",
+    "--enable-hivm-cross-core-gss=true",
+    "--enable-tuning-mode=true",
+    "--enable-hfusion-compile=true",
+    "--enable-triton-kernel-compile=true",
+    "--enable-auto-blockify-loop",
+    "--mlir-disable-threading",
+    "--mlir-print-ir-after=hivm-mark-multi-buffer,hivm-plan-memory,hivm-graph-sync-solver,hivm-enable-multi-buffer",
+    "-o",
+    "/workspace/ascendnpu-ir-837/results/packed-hir-event-pressure/for-candidate-16-16-1/kernel"
+  ],
+  "input_sha256": "8b45754e8bd3cd4adadc0cc454af8c11a8e4ebeac937bcb688976a6b2ba354f4",
+  "compiler_sha256": "1bcdd8704c5363802a43b1361d54f45106256117116f05fcbd8108668555bac9"
+}
