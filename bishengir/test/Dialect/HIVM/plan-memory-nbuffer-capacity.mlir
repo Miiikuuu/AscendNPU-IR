@@ -2,9 +2,21 @@
 // RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,4),(ub,1)]" -hivm-plan-memory -split-input-file | FileCheck %s --check-prefix=CC-FIT
 // RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,9),(l0c,1),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-OVER
 // RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,5),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-OVER
+// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,2147483647),(l0c,1),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-HUGE
+// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,2147483647),(ub,1)]" -hivm-plan-memory -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-HUGE
+// RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,8),(l0c,1),(ub,1)]" -hivm-plan-memory-regbase -split-input-file | FileCheck %s --check-prefix=L1-FIT
+// RUN: bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,4),(ub,1)]" -hivm-plan-memory-regbase -split-input-file | FileCheck %s --check-prefix=CC-FIT
+// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,9),(l0c,1),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-OVER
+// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,5),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-OVER
+// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,2147483647),(l0c,1),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=L1-HUGE
+// RUN: not bishengir-opt %s -hacc-append-device-spec=target=Ascend910B1 --hivm-mark-multi-buffer="enable-auto=true multibuffer-mode=[(gm,1),(l1,1),(l0c,2147483647),(ub,1)]" -hivm-plan-memory-regbase -split-input-file 2>&1 | FileCheck %s --check-prefix=CC-HUGE
 
 // The device limits are in bits: L1=4194304, L0C=1048576. All slots must
 // fit, including when the loop has fewer iterations than the slot count.
+// Maximum accepted signed-i32 counts must report capacity failure without
+// constructing billions of StorageEntries first, in either planner.
+// L1-HUGE: cbuf overflow, requires 1125899906318336 bits while 4194304 bits available!
+// CC-HUGE: cc overflow, requires 562949953159168 bits while 1048576 bits available!
 // L1-OVER: cbuf overflow, requires 4718592 bits while 4194304 bits available!
 // CC-OVER: cc overflow, requires 1310720 bits while 1048576 bits available!
 // L1-FIT-LABEL: func.func @l1_capacity
